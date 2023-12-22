@@ -1,0 +1,47 @@
+//暗色主题适配
+@use "element-plus/theme-chalk/src/dark/css-vars.scss" as *;
+@use './tailwind.scss';
+@use './iconfont/iconfont.css';
+@use './keyframes.scss';
+// @import '@fortawesome/fontawesome-free/css/all.css';
+@font-face {
+  font-family: 'Oblique';
+  src: url("../font/SmileySans-Oblique.ttf");
+}
+@font-face {
+  font-family: 'XiHei';
+  src: url('../font/LXGWNeoXiHei.ttf');
+}
+:root,html,body,div,span,p,i,img,section,main,header,footer,form,input,button,select,a,nav,article,aside,h1,h2,h3,h4,h5,h6 {
+  //@apply duration-200 ease-in-out transition-all;
+}
+a {
+  @apply text-text;
+}
+:root {
+  @apply bg-gray-100;
+  font-family: 'XiHei','宋体','Oblique','微软雅黑', sans-serif;
+  //font-size: 0.88125vw;
+  @media (width < 640px) {
+    font-size: calc(12px + .1vw);
+  }
+  @media (width >= 640px) {
+    font-size: calc(14px + .1vw);
+  }
+  @media (width >= 768px) {
+      font-size: calc(16px + .1vw);
+  }
+  @media (width >= 1024px) {
+      font-size: calc(18px + .1vw);
+  }
+  @media (width >= 1280px) {
+      font-size: calc(20px + .1vw);
+  }
+}
+.part {
+  box-shadow: 0 20px 27px 0 rgba(0, 0, 0, 0.05);
+  @apply relative p-4 rounded-2xl;
+}
+.is-disabled {
+  @apply cursor-not-allowed opacity-50;
+}

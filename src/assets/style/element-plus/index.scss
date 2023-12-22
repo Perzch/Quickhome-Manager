@@ -1,0 +1,29 @@
+@use './light.scss';
+@use './dark.scss';
+:root {
+     //--el-border-radius-base: 1.75rem;
+    --el-font-size-extra-large: 1.25rem;
+    --el-font-size-large: 1.25rem;
+    --el-font-size-medium: 1.125rem;
+    --el-font-size-base: 1rem;
+    --el-font-size-small: .875rem;
+    --el-font-size-extra-small: 0.75rem;
+}
+.el-form-item {
+    .el-input__wrapper {
+        @apply shadow-none bg-transparent border-b border-primary;
+        // 输入框聚焦时增加下边框的宽度，去除背景和边框
+        @apply focus:shadow-none focus:bg-transparent focus-within:border-b-2 focus-within:border-primary;
+        &.is-focus {
+            @apply outline-none shadow-none;
+        }
+    }
+    &.is-error {
+        .el-input__wrapper {
+            @apply border-b border-error;
+        }
+    }
+    .el-form-item__error {
+        @apply text-[.625rem];
+    }
+}

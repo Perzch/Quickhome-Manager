@@ -1,0 +1,16 @@
+$--colors: ('primary': ('base': hsl(127, 28%, 47%),
+    ),
+    'success': ('base': hsl(154, 85%, 67%),
+    ),
+    'warning': ('base': hsl(46, 100%, 92%),
+    ),
+    'danger': ('base': hsl(347, 83%, 90%),
+    ),
+    'error': ('base': hsl(344, 100%, 84%),
+    ),
+    'info': ('base': hsl(105, 67%, 96%),
+    ),
+);
+@forward "element-plus/theme-chalk/src/dark/var.scss" with (
+    $colors: $--colors
+);
