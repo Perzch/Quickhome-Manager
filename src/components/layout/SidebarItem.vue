@@ -17,7 +17,7 @@ defineProps({
 
 <style scoped lang="scss">
 @mixin active {
-  @apply shadow-md text-black bg-white;
+  @apply font-semibold shadow-md text-black bg-white;
   .item-icon {
     @apply bg-primary text-white;
   }
@@ -28,7 +28,10 @@ defineProps({
     @apply flex justify-center items-center text-sm p-2 shadow-md rounded-md bg-white;
   }
   &:hover {
-    @include active;
+    @apply shadow-inner text-black bg-white;
+    .item-icon {
+      @apply bg-primary text-white shadow-inner;
+    }
   }
   &.router-link-active {
     @include active;

@@ -28,14 +28,8 @@ import SidebarItem from "@/components/layout/SidebarItem.vue";
     </div>
 </template>
 <style lang='scss' scoped>
-@mixin active {
-  @apply shadow-md text-black bg-white;
-  .item-icon {
-    @apply bg-primary text-white;
-  }
-}
 .side-bar-items {
-    @apply max-w-64 rounded-md fixed top-10;
+    @apply max-w-64 rounded-md fixed top-2;
     .logo-box {
         @apply p-2 rounded-md border-b flex items-center justify-center w-52 mb-4;
         img {

@@ -2,7 +2,7 @@
   <div class="wrap">
     <div class="bg">
     </div>
-    <starport port="loginTitle" class="w-72 h-28">
+    <starport port="welcomeTitle" class="w-72 h-28">
       <WelComeTitle class="admin"/>
     </starport>
     <starport port="loginCard" class="h-80 w-80">

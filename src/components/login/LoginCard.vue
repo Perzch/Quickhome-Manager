@@ -4,15 +4,21 @@ import {useLoginStore} from "@/stores/login.js";
 import {login, superLogin} from "@/api/manager/manager.js";
 import {encrypt} from "@/utils/encryption.js";
 import {useRouter} from "vue-router";
+import {useGlobalStore} from "@/stores/index.js";
+import {asyncAddRouter} from "@/router/index.js";
 const router = useRouter()
 const props = defineProps({
   isSuper: Boolean
 })
+const {getUserInfo} = useGlobalStore()
 const {form,rules} = useLoginStore()
 const formRef = ref()
 const to = () => {
   const str = props.isSuper ? '/login/admin': '/login/super'
-  router.push(str)
+  router.push({
+    path: str,
+    query: router.currentRoute.value.query
+  })
   formRef.value.resetFields()
 }
 const submit = async () => {
@@ -23,17 +29,32 @@ const submit = async () => {
     username: form.username,
     password: encrypt(form.password)
   })
-  if(props.isSuper) {
-    localStorage.setItem('token', data.token)
-    localStorage.setItem('userId', data.superManagerId)
-    localStorage.setItem('role', '1')
-    localStorage.setItem('username',data.superManagerAccount)
-  } else {
-    localStorage.setItem('token', data.token)
-    localStorage.setItem('userId', data.managerId)
-    localStorage.setItem('role', '0')
+  const obj = {
+    true: {
+      token: data.token,
+      userId: data.superManagerId,
+      role: '1',
+      username: data.superManagerAccount,
+      path: '/statistics'
+    },
+    false:{
+      token: data.token,
+      userId: data.managerId,
+      role: '0',
+      username: data.managerName,
+      path: '/order'
+    }
   }
-  await router.push('/')
+  localStorage.setItem('token', obj[props.isSuper].token)
+  localStorage.setItem('userId', obj[props.isSuper].userId)
+  localStorage.setItem('role', obj[props.isSuper].role)
+  localStorage.setItem('username', obj[props.isSuper].username)
+  asyncAddRouter()
+  if(router.currentRoute.value.query.redirect) {
+    router.push(router.currentRoute.value.query.redirect)
+  } else {
+    router.push(obj[props.isSuper].path)
+  }
 }
 </script>
 
@@ -50,7 +71,7 @@ const submit = async () => {
         <el-input type="password" placeholder="密码" v-model="form.password"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button class="w-full duration-500 hover:scale-105" type="primary" @click="submit">登录</el-button>
+        <el-button class="w-full" type="primary" @click="submit">登录</el-button>
       </el-form-item>
     </el-form>
     <button class="to-super" @click="to" v-debounce>{{isSuper ? '管理员' : '超管'}}登录</button>
