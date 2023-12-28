@@ -5,7 +5,7 @@ const url = `/manager/notification`
 export function listNotification(params) {
     return service({
         method: 'get',
-        url,
+        url: url + '/list',
         params
     })
 }

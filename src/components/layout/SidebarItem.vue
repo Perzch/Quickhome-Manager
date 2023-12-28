@@ -23,9 +23,9 @@ defineProps({
   }
 }
 .side-bar-item {
-  @apply p-2 flex items-center gap-2 text-text rounded-md pl-8;
+  @apply transition-all duration-300 p-2 flex items-center gap-2 text-text rounded-md pl-8;
   .item-icon {
-    @apply flex justify-center items-center text-sm p-2 shadow-md rounded-md bg-white;
+    @apply transition duration-300 flex justify-center items-center text-sm p-2 shadow-md rounded-md bg-white;
   }
   &:hover {
     @apply shadow-inner text-black bg-white;

@@ -2,8 +2,17 @@
 import {useRouter} from "vue-router";
 
 const router = useRouter()
-console.log(router.currentRoute.value.query)
 const to = () => {
+  const obj = {
+    0: '/order',
+    1: '/statistical',
+  }
+  if(localStorage.getItem('role')) {
+    router.push({
+      path: obj[localStorage.getItem('role')]
+    })
+    return
+  }
   router.push({
     path: '/login/admin',
     query: {

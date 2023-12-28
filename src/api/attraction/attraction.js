@@ -40,7 +40,7 @@ export function updateAttraction(data) {
     })
 }
 
-export function delAttraction(id) {
+export function deleteAttraction(id) {
     return service({
         method: 'delete',
         url: url + '/' + id

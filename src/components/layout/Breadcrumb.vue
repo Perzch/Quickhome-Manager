@@ -11,5 +11,7 @@ const route = useRoute()
 </template>
 
 <style scoped lang="scss">
-
+:deep(.el-breadcrumb) {
+  @apply text-base;
+}
 </style>

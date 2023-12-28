@@ -1,11 +1,11 @@
 <template>
   <div class="wrap">
     <div class="bg"></div>
-    <starport port="welcomeTitle" class="w-72 h-28">
+    <starport port="welcomeTitle" class="duration-1000 w-72 h-28">
       <WelComeTitle class="super-admin"/>
     </starport>
     <div>
-      <starport port="loginCard" class="h-80 w-80">
+      <starport port="loginCard" class="duration-1000 h-80 w-80">
         <LoginCard :is-super="true"/>
       </starport>
     </div>

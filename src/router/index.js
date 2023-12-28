@@ -1,117 +1,140 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import {useTitle} from "@vueuse/core";
 
-const asyncRouter = {
-    path: '/',
-    name: 'Root',
-    // redirect: redirect[localStorage.getItem('role')] || '/login/admin',
-    component: () => import('@/components/layout/index.vue'),
-    children: [
-        {
-            path: '/statistical',
-            name: 'Statistical',
-            component: () => import('@/views/statistical/index.vue'),
-            meta: {
-                role: '1',
-                title: '流水统计'
-            }
-        },
-        {
-            path: '/house',
-            name: 'House',
-            component: () => import('@/views/house/index.vue'),
-            meta: {
-                role: '1',
-                title: '房屋管理'
-            }
-        },
-        {
-            path: '/user',
-            name: 'User',
-            component: () => import('@/views/user/index.vue'),
-            meta: {
-                role: '1',
-                title: '用户管理'
-            }
-        },
-        {
-            path: '/servicePerson',
-            name: 'ServicePerson',
-            component: () => import('@/views/servicePerson/index.vue'),
-            meta: {
-                role: '0',
-                title: '服务人员管理'
-            }
-        },
-        {
-            path: '/order',
-            name: 'Order',
-            component: () => import('@/views/order/index.vue'),
-            meta: {
-                role: '0',
-                title: '订单管理'
-            }
-        },
-        {
-            path: '/attraction',
-            name: 'Attraction',
-            component: () => import('@/views/attraction/index.vue'),
-            meta: {
-                role: '0',
-                title: '景点管理'
-            }
-        },
-        {
-            path: '/coupon',
-            name: 'Coupon',
-            component: () => import('@/views/coupon/index.vue'),
-            meta: {
-                role: '0',
-                title: '优惠券管理'
-            }
-        },
-        {
-            path: '/coupon/category',
-            name: 'CouponCategory',
-            component: () => import('@/views/coupon/category.vue'),
-            meta: {
-                role: '0',
-                title: '优惠券分类管理'
-            }
-        },
-        {
-            path: '/notification',
-            name: 'Notification',
-            component: () => import('@/views/notification/index.vue'),
-            meta: {
-                role: '0',
-                title: '通知管理'
-            }
-        },
-        {
-            path: '/log',
-            name: 'Log',
-            component: () => import('@/views/log/index.vue'),
-            meta: {
-                role: '0',
-                title: '日志'
-            }
-        },
-    ]
+
+const getAsyncRouter = (role = localStorage.getItem('role')) => {
+    const obj = {
+        path: '/',
+        name: 'Root',
+        // redirect: redirect[localStorage.getItem('role')] || '/login/admin',
+        component: () => import('@/components/layout/index.vue'),
+        children: [
+            {
+                path: '/statistical',
+                name: 'Statistical',
+                component: () => import('@/views/statistical/index.vue'),
+                meta: {
+                    role: '1',
+                    title: '流水统计',
+                    icon: 'Histogram'
+                }
+            },
+            {
+                path: '/house',
+                name: 'House',
+                component: () => import('@/views/house/index.vue'),
+                meta: {
+                    role: '1',
+                    title: '房屋',
+                    icon: 'HomeFilled'
+                }
+            },
+            {
+                path: '/manager',
+                name: 'Manager',
+                component: () => import('@/views/manager/index.vue'),
+                meta: {
+                    role: '1',
+                    title: '管理员',
+                    icon: 'UserFilled'
+                }
+            },
+            {
+                path: '/user',
+                name: 'User',
+                component: () => import('@/views/user/index.vue'),
+                meta: {
+                    role: '0',
+                    title: '用户',
+                    icon: 'UserFilled'
+                }
+            },
+            {
+                path: '/servicePerson',
+                name: 'ServicePerson',
+                component: () => import('@/views/servicePerson/index.vue'),
+                meta: {
+                    role: '0',
+                    title: '服务人员',
+                    icon: 'Avatar'
+                }
+            },
+            {
+                path: '/order',
+                name: 'Order',
+                component: () => import('@/views/order/index.vue'),
+                meta: {
+                    role: '0',
+                    title: '订单',
+                    icon: 'List'
+                }
+            },
+            {
+                path: '/attraction',
+                name: 'Attraction',
+                component: () => import('@/views/attraction/index.vue'),
+                meta: {
+                    role: '0',
+                    title: '景点',
+                    icon: 'Flag'
+                }
+            },
+            {
+                path: '/coupon',
+                name: 'Coupon',
+                component: () => import('@/views/coupon/index.vue'),
+                meta: {
+                    role: '0',
+                    title: '优惠券',
+                    icon: 'Ticket'
+                }
+            },
+            {
+                path: '/coupon/category',
+                name: 'CouponCategory',
+                component: () => import('@/views/coupon/category.vue'),
+                meta: {
+                    role: '0',
+                    title: '优惠券分类',
+                    icon: 'Ticket'
+                }
+            },
+            {
+                path: '/notification',
+                name: 'Notification',
+                component: () => import('@/views/notification/index.vue'),
+                meta: {
+                    role: '0',
+                    title: '通知',
+                    icon: 'BellFilled'
+                }
+            },
+            {
+                path: '/log',
+                name: 'Log',
+                component: () => import('@/views/log/index.vue'),
+                meta: {
+                    role: '0',
+                    title: '日志',
+                    icon: 'Checked'
+                }
+            },
+        ]
+    }
+    obj.children = obj.children.filter(item => role >= item.meta.role)
+    return obj
 }
 
+const getAsyncRouterChildren = (role = localStorage.getItem('role')) => getAsyncRouter(role).children
 
 const asyncAddRouter = () => {
-    removeRouter && removeRouter()
-    const tmp = asyncRouter
-    tmp.children = tmp.children.filter(item => localStorage.getItem('role') >= item.meta.role)
-    removeRouter = router.addRoute(tmp)
+    router.addRoute(getAsyncRouter())
+    return Promise.resolve()
 }
-let removeRouter = null;
 // 每次页面刷新时重新添加一次
-window.addEventListener('load', () => {
-    asyncAddRouter()
-})
+// window.addEventListener('load', () => {
+//     asyncAddRouter()
+// })
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -140,7 +163,7 @@ const router = createRouter({
                 title: '404 Not Found'
             }
         },
-    ]
+    ].concat(['',null,undefined].includes(localStorage.getItem('role')) ? [] : [getAsyncRouter()])
 })
 
 router.beforeEach((to, from, next) => {
@@ -166,8 +189,8 @@ router.beforeEach((to, from, next) => {
 })
 
 export {
-    removeRouter,
-    asyncAddRouter
+    asyncAddRouter,
+    getAsyncRouterChildren
 }
 
 export default router

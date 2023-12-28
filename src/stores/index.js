@@ -11,25 +11,27 @@ export const useGlobalStore =defineStore('global', () => {
     const username = useStorage('username', '')
     const userInfo = ref(null)
     const router = useRouter()
-    const getUserInfo = async () => {
-        if(userId.value && token.value) {
-            const res = await getUInfo({userId:userId.value,token:token.value})
-            userInfo.value = res.data
-            if(role.value === '1') {
-                username.value = res.data.superManagerAccount
-            } else {
-                username.value = res.data.managerAccount
-            }
-        }
-    }
-    watch(() => [userId.value,token.value], () => {
-        console.log('watch')
-        console.log(userId.value, token.value)
-        getUserInfo()
-    })
+    // const getUserInfo = async () => {
+    //     if(userId.value && token.value) {
+    //         const res = await getUInfo({userId:userId.value,token:token.value})
+    //         userInfo.value = res.data
+    //         if(role.value === '1') {
+    //             username.value = res.data.superManagerAccount
+    //         } else {
+    //             username.value = res.data.managerAccount
+    //         }
+    //     }
+    //     return Promise.resolve()
+    // }
+    // watch(() => userId.value, () => {
+    //     getUserInfo()
+    // })
     const logout = () => {
-        userId.value = ''
-        token.value = ''
+        localStorage.setItem('userId', '')
+        localStorage.setItem('token', '')
+        localStorage.setItem('role', '')
+        localStorage.setItem('username', '')
+        router.removeRoute('Root')
         router.push('/login/admin')
     }
     return {
@@ -38,6 +40,6 @@ export const useGlobalStore =defineStore('global', () => {
         userId,
         token,
         logout,
-        getUserInfo
+        // getUserInfo
     }
 })

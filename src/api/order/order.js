@@ -36,7 +36,7 @@ export function endOrder(data) {
 
 export function listOrder(params) {
     return service({
-        method: 'post',
+        method: 'get',
         url: `${url}/list`,
         params
     })
@@ -44,7 +44,7 @@ export function listOrder(params) {
 
 export function listOrderByHome(params) {
     return service({
-        method: 'post',
+        method: 'get',
         url: `${url}/home/list`,
         params
     })
@@ -52,7 +52,7 @@ export function listOrderByHome(params) {
 
 export function updateOrder(data) {
     return service({
-        method: 'post',
+        method: 'put',
         url: `${url}/update`,
         data
     })
@@ -60,7 +60,7 @@ export function updateOrder(data) {
 
 export function deleteOrder(id) {
     return service({
-        method: 'post',
+        method: 'delete',
         url: `${url}/${id}`
     })
 }
@@ -75,7 +75,7 @@ export function endOrderRefund(orderId) {
 
 export function scheduleCancellation(orderId) {
     return service({
-        method: 'post',
+        method: 'get',
         url: `${url}/scheduleCancellation`,
         params: { orderId }
     })

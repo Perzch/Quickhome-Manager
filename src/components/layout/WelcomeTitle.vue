@@ -1,26 +1,16 @@
 <script setup>
-import {useStorage} from "@vueuse/core";
-const username = useStorage('username', 'QuickHome欢迎您.')
 </script>
 
 <template>
   <div class="title-box">
     <h1 class="title">Welcome!</h1>
-    <p class="title-placeholder">{{username}}</p>
+    <p class="title-placeholder">QuickHome欢迎您.</p>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .title-box {
   @apply flex justify-start flex-col gap-2;
-  &.welcome {
-    .title {
-      display: none;
-    }
-    .title-placeholder {
-      @apply text-base text-text;
-    }
-  }
   &.super-admin {
     @apply justify-center;
     .title {

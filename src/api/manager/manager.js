@@ -5,7 +5,7 @@ const url = `/manager`
 export function listManager(params) {
     return service({
         method: 'get',
-        url,
+        url: url + '/list',
         params
     })
 }

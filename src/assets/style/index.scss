@@ -13,7 +13,6 @@
   src: url('../font/LXGWNeoXiHei.ttf');
 }
 :root,html,body,div,span,p,i,img,section,main,header,footer,form,input,button,select,a,nav,article,aside,h1,h2,h3,h4,h5,h6 {
-  //@apply duration-200 ease-in-out transition-all;
 }
 a {
   @apply text-text;
@@ -39,9 +38,31 @@ a {
   }
 }
 .part {
-  box-shadow: 0 20px 27px 0 rgba(0, 0, 0, 0.05);
-  @apply relative p-4 rounded-2xl;
+  //box-shadow: 0 20px 27px 0 rgba(0, 0, 0, 0.05);
+  @apply relative p-2 bg-white rounded-md shadow-inner duration-500;
+  &:hover {
+    @apply shadow-md;
+  }
 }
 .is-disabled {
   @apply cursor-not-allowed opacity-50;
+}
+.pagination {
+  @apply flex justify-end rounded overflow-x-auto;
+}
+
+.part-button-group {
+  :deep(.el-button) {
+    @apply rounded;
+    &:hover {
+      @apply shadow-md;
+    }
+    &:active {
+      @apply shadow-inner;
+    }
+  }
+}
+
+.wrap {
+  @apply flex flex-col gap-4;
 }

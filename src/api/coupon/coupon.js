@@ -5,7 +5,7 @@ const url = `/coupon`
 export function listCoupon(params) {
     return service({
         method: 'get',
-        url,
+        url: url + '/list',
         params
     })
 }

@@ -2,10 +2,9 @@
 import {ref, computed} from 'vue'
 import {useRoute, useRouter} from "vue-router";
 import {encrypt} from "@/utils/encryption.js";
-import {addManager, deleteManager, listManager} from "@/api/manager/manager.js";
+import {addManager, deleteManager, listManager, updateManager} from "@/api/manager/manager.js";
 import {useClipboard} from "@vueuse/core";
 import {DeleteFilled, Edit, Key} from "@element-plus/icons-vue";
-import {listOrder} from "@/api/order/order.js";
 
 const loading = ref(true)
 const editDisabled = ref(true)
@@ -40,7 +39,7 @@ const {copy, isSupported} = useClipboard()
 
 const getList = async () => {
   loading.value = true
-  const  { data } =  await listOrder(queryParams.value)
+  const  { data } =  await listManager(queryParams.value)
   list.value = data.records
   total.value = data.total
   loading.value = false
@@ -98,7 +97,7 @@ const submit = async () => {
   const fn = form.value.managerId ? updateManager : addManager
   const tmp = {
     ...form.value,
-    managerPwd: encrypt('quickhome123')
+    managerPwd: form.value.managerId ? null : encrypt('quickhome888')
   }
   loading.value = true
   await fn(tmp)
@@ -107,6 +106,21 @@ const submit = async () => {
   getList()
 }
 
+
+const resetPassword = async (row) => {
+  await ElMessageBox.confirm(`是否将${row.managerName}的密码重置为quickhome888?`,'提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  })
+  loading.value = true
+  await updateManager({
+    ...row,
+    managerPwd: encrypt('quickhome888')
+  })
+  loading.value = false
+  ElMessage.success('重置成功!')
+}
 </script>
 
 <template>
@@ -120,25 +134,28 @@ const submit = async () => {
       <el-table :data="list" size="default" @selectionChange="selectionChange">
         <el-table-column type="selection"></el-table-column>
         <el-table-column label="序号" width="80" type="index" :index="curIndex"></el-table-column>
-        <el-table-column label="房屋信息" width="auto">
+        <el-table-column label="账号" width="auto">
           <template #default="{row}">
-            <div class="home-info">
-              <span class="home-name">{{row.home.homeName}}</span>
-              <span class="home-type">{{row.home.homeType}}</span>
+            <div class="account-email-box">
+              <span class="user-account">{{row.managerName}}</span>
+              <span class="user-email">{{row.managerAccount}}</span>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="房屋地址" prop="home.homeAddress"/>
-        <el-table-column label="入住时间" prop="checkInTime"/>
-        <el-table-column label="退房时间" prop="checkOutTime"/>
-        <el-table-column label="付款金额" prop="orderPayment">
+        <el-table-column label="手机号">
           <template #default="{row}">
-            <span>￥{{row.orderPayment.toFixed(2)}}</span>
+            <span class="manager-phone" @click="copyPhone(row)" title="点击复制">{{row.managerPhone}}</span>
           </template>
         </el-table-column>
-        <el-table-column label="订单状态" prop="orderState" />
+        <el-table-column prop="managerGender" label="性别" width="60"/>
+        <el-table-column label="状态">
+          <template #default="{row}">
+            <el-tag size="large" :type="row.onlineStatus === '离线' ? 'info' : 'primary'">{{row.onlineStatus}}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="操作">
           <template #default="{row}">
+            <el-button v-debounce :icon="Key" circle title="重置密码"  @click="resetPassword(row)" />
             <el-button v-debounce :icon="Edit" circle title="修改" @click="dialogOpen(row, '修改管理员')"/>
             <el-button v-debounce :icon="DeleteFilled" circle title="删除" @click="deleteRow(row)"/>
           </template>
@@ -188,9 +205,9 @@ const submit = async () => {
 </template>
 
 <style scoped lang="scss">
-.home-info {
+.account-email-box {
   @apply grid grid-rows-2;
-  .home-name {
+  .user-account {
     @apply font-semibold text-title;
   }
 }

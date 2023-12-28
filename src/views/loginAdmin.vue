@@ -2,10 +2,10 @@
   <div class="wrap">
     <div class="bg">
     </div>
-    <starport port="welcomeTitle" class="w-72 h-28">
+    <starport port="welcomeTitle" class="duration-1000 w-72 h-28">
       <WelComeTitle class="admin"/>
     </starport>
-    <starport port="loginCard" class="h-80 w-80">
+    <starport port="loginCard" class="duration-1000 h-80 w-80">
       <LoginCard :is-super="false"/>
     </starport>
   </div>

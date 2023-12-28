@@ -62,7 +62,7 @@ export function updateUser(data) {
 export function listUser(params) {
     return service({
         method: 'get',
-        url,
+        url: url + '/list',
         params
     })
 }

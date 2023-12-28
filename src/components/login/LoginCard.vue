@@ -1,6 +1,5 @@
 <script setup>
 import {ref} from "vue";
-import {useLoginStore} from "@/stores/login.js";
 import {login, superLogin} from "@/api/manager/manager.js";
 import {encrypt} from "@/utils/encryption.js";
 import {useRouter} from "vue-router";
@@ -10,9 +9,25 @@ const router = useRouter()
 const props = defineProps({
   isSuper: Boolean
 })
-const {getUserInfo} = useGlobalStore()
-const {form,rules} = useLoginStore()
+// const {getUserInfo} = useGlobalStore()
+const form = ref({
+  username: '',
+  password: ''
+})
+const rules = {
+  username: [
+    { required: true, message: '请输入用户名/电话', trigger: 'blur' },
+    { min: 6, max: 18, message: '长度在 6 到 18 个字符', trigger: 'blur' }
+  ],
+  password: [
+    { required: true, message: '请输入密码', trigger: 'blur' },
+    { min: 6, max: 18, message: '长度在 6 到 18 个字符', trigger: 'blur' }
+  ]
+}
 const formRef = ref()
+/**
+ * @description 跳转到超管/管理员登录
+ */
 const to = () => {
   const str = props.isSuper ? '/login/admin': '/login/super'
   router.push({
@@ -21,13 +36,17 @@ const to = () => {
   })
   formRef.value.resetFields()
 }
+/**
+ * @description 提交登录
+ * @returns {Promise<void>}
+ */
 const submit = async () => {
   const flag = await formRef.value.validate()
   if(!flag) return
   const fn = props.isSuper ? superLogin : login
   const {data} = await fn({
-    username: form.username,
-    password: encrypt(form.password)
+    username: form.value.username,
+    password: encrypt(form.value.password)
   })
   const obj = {
     true: {
@@ -35,7 +54,7 @@ const submit = async () => {
       userId: data.superManagerId,
       role: '1',
       username: data.superManagerAccount,
-      path: '/statistics'
+      path: '/statistical'
     },
     false:{
       token: data.token,
@@ -49,12 +68,16 @@ const submit = async () => {
   localStorage.setItem('userId', obj[props.isSuper].userId)
   localStorage.setItem('role', obj[props.isSuper].role)
   localStorage.setItem('username', obj[props.isSuper].username)
-  asyncAddRouter()
-  if(router.currentRoute.value.query.redirect) {
-    router.push(router.currentRoute.value.query.redirect)
-  } else {
-    router.push(obj[props.isSuper].path)
-  }
+  await asyncAddRouter()
+  // await getUserInfo()
+  ElMessage.success('登录成功!')
+  setTimeout( async() => {
+    if(router.currentRoute.value.query.redirect) {
+      await router.push(router.currentRoute.value.query.redirect)
+    } else {
+      await router.push(obj[props.isSuper].path)
+    }
+  }, 350)
 }
 </script>
 
@@ -65,10 +88,10 @@ const submit = async () => {
     </div>
     <el-form size="large" :model="form" :rules="rules" ref="formRef">
       <el-form-item prop="username">
-        <el-input v-model="form.username" placeholder="用户名/手机号"></el-input>
+        <el-input v-model="form.username" placeholder="用户名/手机号" @keydown.enter.native="submit"></el-input>
       </el-form-item>
       <el-form-item prop="password">
-        <el-input type="password" placeholder="密码" v-model="form.password"></el-input>
+        <el-input type="password" placeholder="密码" v-model="form.password" @keydown.enter.native="submit"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button class="w-full" type="primary" @click="submit">登录</el-button>
@@ -80,7 +103,7 @@ const submit = async () => {
 
 <style scoped lang="scss">
 .card {
-  @apply shadow-xl duration-1000 bg-opacity-95 backdrop-blur-2xl rounded-lg p-6 w-80;
+  @apply transition-all duration-1000 shadow-xl bg-opacity-95 backdrop-blur-2xl rounded-lg p-6 w-80;
   .card-header {
     @apply text-center my-4 text-2xl font-bold text-title;
   }

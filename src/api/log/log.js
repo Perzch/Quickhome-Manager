@@ -5,7 +5,7 @@ const url = `/log`
 export function listLog(params) {
     return service({
         method: 'get',
-        url,
+        url: url + '/list',
         params
     })
 }
