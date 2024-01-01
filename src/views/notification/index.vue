@@ -35,7 +35,14 @@ const getList = async () => {
   total.value = data.total
   loading.value = false
 }
-getList()
+watch([
+  () => queryParams.value.page,
+  () => queryParams.value.size,
+], () => {
+  getList()
+}, {
+  immediate: true
+})
 const toDetail = (row) => {
   notificationDetail && notificationDetail.close()
   notificationDetail = ElNotification({
@@ -104,12 +111,12 @@ const submit = async () => {
       <el-button v-debounce icon="delete" type="danger" :disabled="delDisabled" @click="deleteRow()">删除通知</el-button>
     </div>
     <div class="part part-table">
-      <el-table :data="list" size="default" @selectionChange="selectionChange">
+      <el-table :data="list" @selectionChange="selectionChange" >
         <el-table-column type="selection"></el-table-column>
         <el-table-column label="序号" width="80" type="index" :index="curIndex"></el-table-column>
-        <el-table-column prop="notificationContent" label="通知内容" >
+        <el-table-column prop="notificationContent" label="通知内容">
           <template #default="{row}">
-            <div class="notification-content" v-html="row.notificationContent" />
+            <div v-html="row.notificationContent" />
           </template>
         </el-table-column>
         <el-table-column prop="notificationReleaseTime" label="发布时间" />
@@ -132,8 +139,6 @@ const submit = async () => {
           background
           layout="total, pager, sizes, jumper"
           :total="total"
-          @size-change="getList"
-          @current-change="getList"
       />
     </div>
     <el-dialog v-model="open" :title="title" @close="dialogClose">
@@ -158,7 +163,4 @@ const submit = async () => {
 </template>
 
 <style scoped lang="scss">
-.notification-content {
-  @apply truncate w-fit h-4;
-}
 </style>

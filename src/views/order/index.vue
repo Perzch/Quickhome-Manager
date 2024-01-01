@@ -1,5 +1,5 @@
 <script setup>
-import {ref, computed} from 'vue'
+import {ref, computed, watch} from 'vue'
 import {useRoute, useRouter} from "vue-router";
 import {encrypt} from "@/utils/encryption.js";
 import {addManager, deleteManager, listManager} from "@/api/manager/manager.js";
@@ -45,7 +45,14 @@ const getList = async () => {
   total.value = data.total
   loading.value = false
 }
-getList()
+watch([
+  () => queryParams.value.page,
+  () => queryParams.value.size,
+], () => {
+  getList()
+}, {
+  immediate: true
+})
 
 const selections = ref([])
 const selectionChange = (list) => {
@@ -153,8 +160,6 @@ const submit = async () => {
           background
           layout="total, pager, sizes, jumper"
           :total="total"
-          @size-change="getList"
-          @current-change="getList"
       />
     </div>
     <el-dialog v-model="open" :title="title" @close="dialogClose">

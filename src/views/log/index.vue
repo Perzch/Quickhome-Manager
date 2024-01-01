@@ -1,5 +1,5 @@
 <script setup>
-import {ref, computed} from 'vue'
+import {ref, computed, watch} from 'vue'
 import { listLog } from "@/api/log/log.js";
 import {useRoute, useRouter} from "vue-router";
 import UserInfoDialog from "@/components/user/UserInfoDialog.vue";
@@ -26,7 +26,14 @@ const getList = async () => {
   total.value = data.total
   loading.value = false
 }
-getList()
+watch([
+  () => queryParams.value.page,
+  () => queryParams.value.size,
+], () => {
+  getList()
+}, {
+  immediate: true
+})
 const toExecuteUser = (row) => {
   userId.value = row.userPerformingId
   open.value = true
@@ -63,8 +70,6 @@ const toExecuteUser = (row) => {
           background
           layout="total, pager, sizes, jumper"
           :total="total"
-          @size-change="getList"
-          @current-change="getList"
       />
     </div>
     <UserInfoDialog :user-id="userId" v-model="open"/>

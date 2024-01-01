@@ -1,9 +1,9 @@
 <script setup>
-import {ref, computed} from 'vue'
+import {ref, computed, watch} from 'vue'
 import {useRouter} from "vue-router";
 import {DeleteFilled, Edit, Plus} from "@element-plus/icons-vue";
 import RichInput from "@/components/RichInput.vue";
-import {listAttraction, deleteAttraction} from "@/api/attraction/attraction.js";
+import {listAttraction, deleteAttraction, addAttraction, updateAttraction} from "@/api/attraction/attraction.js";
 
 const loading = ref(true)
 const editDisabled = ref(true)
@@ -13,19 +13,15 @@ const timeRange = ref([])
 const fileList = ref([])
 const uploadOptions = computed(() => ({
   // action: '/attraction/img',
-  action: import.meta.env.VITE_BASE_URL + '/attraction/img',
-  headers: {
-  },
-  data: {
-    attractionId: form.value.attractionId,
-  },
-  limit: 5,
+  action: import.meta.env.VITE_BASE_URL + '/upload',
+  accept: '.png, .jpeg, .jpg, .git, .webp',
+  limit: 10,
   listType: 'picture-card',
   multiple: true
 }))
 const formRef = ref(null)
 const rules = {
-  'attraction.attractionName': [
+  'attractionName': [
     { required: true, message: '景点名称不能为空' }
   ]
 }
@@ -48,7 +44,14 @@ const getList = async () => {
   total.value = data.total
   loading.value = false
 }
-getList()
+watch([
+  () => queryParams.value.page,
+  () => queryParams.value.size,
+], () => {
+  getList()
+}, {
+  immediate: true
+})
 
 const selections = ref([])
 const selectionChange = (list) => {
@@ -61,7 +64,7 @@ const deleteRow = (row = selections.value) => {
   if(!row && row.length > 0) {
     ElMessage.warning('请先选择要删除的景点!')
   }
-  const str = row.attractionId ? `是否删除景点${row.attraction.attractionName}?` : `是否删除${row.length}条数据?`
+  const str = row.attractionId ? `是否删除景点${row.attractionName}?` : `是否删除${row.length}条数据?`
   ElMessageBox.confirm(str,'提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
@@ -77,7 +80,8 @@ const deleteRow = (row = selections.value) => {
 
 const dialogOpen = (row = {}, str = '') => {
   form.value = JSON.parse(JSON.stringify(row))
-  fileList.value = JSON.parse(JSON.stringify(row.attractionImgList || []))
+  fileList.value = JSON.parse(JSON.stringify(row.attractionImageList?.map((item,index) => ({uid: index, url: item}) ) || []))
+  timeRange.value = [row.openingTime, row.closingTime]
   open.value = true
   title.value = str
 }
@@ -90,11 +94,21 @@ const dialogClose = () => {
 
 const submit = async () => {
   await formRef.value.validate()
-  const fn = form.value.userNotificationId ? updateNotification : addNotification;
+  const fn = form.value.attractionId ? updateAttraction : addAttraction;
+  form.value.attractionImages = fileList.value.map(item => item.url).join(',')
+  form.value.openingTime = timeRange.value[0]
+  form.value.closingTime = timeRange.value[1]
   fn(form.value).then(() => {
-    ElMessage.success(form.value.userNotificationId ? '修改成功!' : '添加成功!')
+    ElMessage.success(form.value.attractionId ? '修改成功!' : '添加成功!')
     dialogClose()
     getList()
+  })
+}
+
+const fileListChange = (res) => {
+  fileList.value.push({
+    uid: Date.now(),
+    url: res.data
   })
 }
 </script>
@@ -110,7 +124,7 @@ const submit = async () => {
       <el-table :data="list" size="default" @selectionChange="selectionChange">
         <el-table-column type="selection"></el-table-column>
         <el-table-column label="序号" width="80" type="index" :index="curIndex"></el-table-column>
-        <el-table-column prop="attraction.attractionName" label="景点名称" />
+        <el-table-column prop="attractionName" label="景点名称" />
 <!--        <el-table-column prop="attraction.attractionInformation" label="景点介绍" >-->
 <!--          <template #default="{row}">-->
 <!--            <div class="notification-content" v-html="row.attraction.attractionInformation" />-->
@@ -119,9 +133,9 @@ const submit = async () => {
         <el-table-column label="开放时间" >
           <template #default="{row}">
             <div>
-              <span class="open-time">{{row.attraction?.openingTime}}</span>
+              <span class="open-time">{{row?.openingTime}}</span>
               -
-              <span class="close-time">{{row.attraction?.closingTime}}</span>
+              <span class="close-time">{{row?.closingTime}}</span>
             </div>
           </template>
         </el-table-column>
@@ -142,30 +156,29 @@ const submit = async () => {
           background
           layout="total, pager, sizes, jumper"
           :total="total"
-          @size-change="getList"
-          @current-change="getList"
       />
     </div>
     <el-dialog v-model="open" :title="title" @close="dialogClose">
       <div class="flex flex-col gap-4">
         <el-form :model="form" :rules="rules" ref="formRef" label-width="6.25rem">
-          <el-form-item label="景点名称">
+          <el-form-item label="景点名称" prop="attractionName">
             <el-input v-model="form.attractionName" placeholder="请输入景点名称"></el-input>
           </el-form-item>
-          <el-form-item label="开放时间" prop="closingTime">
+          <el-form-item label="开放时间" prop="closingTime" property="openingTime,closingTime">
             <el-time-picker
                 v-model="timeRange"
                 is-range
+                value-format="HH:mm:ss"
                 range-separator="-"
                 start-placeholder="开放时间"
                 end-placeholder="关闭时间"
             />
           </el-form-item>
-          <el-form-item label="景点介绍">
+          <el-form-item label="景点介绍" prop="attractionInformation">
             <RichInput v-model="form.attractionInformation" placeholder="请输入景点介绍"/>
           </el-form-item>
-          <el-form-item label="景点图片">
-            <el-upload v-bind="uploadOptions" :file-list="fileList">
+          <el-form-item label="景点图片" prop="attractionImages">
+            <el-upload v-bind="uploadOptions" :file-list="fileList" :on-success="fileListChange">
               <el-icon><Plus/></el-icon>
             </el-upload>
           </el-form-item>

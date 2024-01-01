@@ -5,7 +5,7 @@ const url = `/coupon`
 export function listCoupon(params) {
     return service({
         method: 'get',
-        url: url + '/list',
+        url: url + '/coupon/list',
         params
     })
 }
@@ -13,6 +13,14 @@ export function listCoupon(params) {
 export function addCoupon(data){
     return service({
         method: 'post',
+        url,
+        data
+    })
+}
+
+export function updateCoupon(data){
+    return service({
+        method: 'put',
         url,
         data
     })
