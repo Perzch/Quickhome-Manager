@@ -22,19 +22,19 @@ a {
   font-family: 'XiHei','宋体','Oblique','微软雅黑', sans-serif;
   //font-size: 0.88125vw;
   @media (width < 640px) {
-    font-size: calc(12px + .1vw);
+    font-size: calc(10px + .1vw);
   }
   @media (width >= 640px) {
-    font-size: calc(14px + .1vw);
+    font-size: calc(12px + .1vw);
   }
   @media (width >= 768px) {
-      font-size: calc(16px + .1vw);
+      font-size: calc(14px + .1vw);
   }
   @media (width >= 1024px) {
-      font-size: calc(18px + .1vw);
+      font-size: calc(16px + .1vw);
   }
   @media (width >= 1280px) {
-      font-size: calc(20px + .1vw);
+      font-size: calc(18px + .1vw);
   }
 }
 .part {

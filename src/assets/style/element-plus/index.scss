@@ -1,11 +1,11 @@
 @use './light.scss';
 @use './dark.scss';
 :root {
-    --el-font-size-extra-large: 1.25rem;
-    --el-font-size-large: 1.125rem;
-    --el-font-size-medium: 1rem;
-    --el-font-size-base: .875rem;
-    --el-font-size-small: .8125rem;
+    --el-font-size-extra-large: 1.375rem;
+    --el-font-size-large: 1.25rem;
+    --el-font-size-medium: 1.125rem;
+    --el-font-size-base: 1rem;
+    --el-font-size-small: .875rem;
     --el-font-size-extra-small: 0.75rem;
 }
 .el-form-item {
