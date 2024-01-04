@@ -21,11 +21,19 @@ const visibilitychange = () => {
     }
   }
 }
+const beforeunload = () => {
+  if(localStorage.getItem('role') === '0') {
+    const userId = localStorage.getItem('userId')
+    offline(userId)
+  }
+}
 
 window.addEventListener('visibilitychange',visibilitychange)
+window.addEventListener('beforeunload', beforeunload)
 
 onUnmounted(() => {
   window.removeEventListener('visibilitychange',visibilitychange)
+  window.removeEventListener('beforeunload', beforeunload)
 })
 </script>
 <template>

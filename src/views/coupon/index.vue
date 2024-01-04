@@ -255,7 +255,8 @@ onUnmounted(() => {
             <el-input v-model="form.couponName" placeholder="请输入优惠券名称"></el-input>
           </el-form-item>
           <el-form-item label="详细内容" prop="discountInformation">
-            <RichInput v-model="form.discountInformation" placeholder="请输入详细内容"/>
+            <el-input type="textarea" :rows="2" v-model="form.discountInformation" placeholder="请输入详细内容"></el-input>
+<!--            <RichInput v-model="form.discountInformation" placeholder="请输入详细内容"/>-->
           </el-form-item>
           <el-form-item label="使用时间段" prop="earliestUseTime">
             <el-date-picker
