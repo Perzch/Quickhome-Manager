@@ -1,5 +1,5 @@
 <script setup>
-import {ref, computed, watch, onUnmounted} from 'vue'
+import {ref, computed, watch, onUnmounted, onMounted} from 'vue'
 import {useRouter} from "vue-router";
 import {addNotification, deleteNotification, listNotification, updateNotification} from "@/api/manager/notification.js";
 import {DeleteFilled, Edit, InfoFilled, Pointer, UserFilled} from "@element-plus/icons-vue";
@@ -40,6 +40,8 @@ const rules = {
             callback(new Error('满减金额不能为空'))
           } else if(value < 0) {
             callback(new Error('满减金额不能小于0'))
+          } else if(value > form.value.useThreshold) {
+            callback(new Error('满减金额不能大于需满足金额'))
           } else {
             callback()
           }
@@ -155,7 +157,6 @@ const release = (row, flag) => {
   // flag代表是否全体发放
   if(!flag) {
     window.open(`/user?couponId=${row.couponId}`,'_blank')
-    window.addEventListener('message', listenUpdate, false)
   } else {
     ElMessageBox.confirm('是否向全部用户发放此优惠券?','提示', {
       confirmButtonText: '确定',
@@ -173,10 +174,14 @@ const release = (row, flag) => {
 }
 
 const listenUpdate = (e) => {
+  console.log(e)
   ElMessage.success('优惠券发放成功!')
 }
+onMounted(() => {
+  window.addEventListener('message', listenUpdate)
+})
 onUnmounted(() => {
-  window.removeEventListener('message', listenUpdate, false)
+  window.removeEventListener('message', listenUpdate)
 })
 </script>
 

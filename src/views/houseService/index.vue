@@ -1,11 +1,20 @@
 <script setup>
-import {ref, computed, watch} from 'vue'
+import {ref, computed, watch, onUnmounted, onMounted} from 'vue'
 import {useRoute, useRouter} from "vue-router";
-import {encrypt} from "@/utils/encryption.js";
 import {addManager, deleteManager, listManager, updateManager} from "@/api/manager/manager.js";
 import {useClipboard} from "@vueuse/core";
-import {CircleCheckFilled, DeleteFilled, Edit, Key} from "@element-plus/icons-vue";
-import {listRCAMI} from "@/api/RCAMI/RCAMI.js";
+import {
+  CircleCheckFilled,
+  DeleteFilled,
+  Edit,
+  InfoFilled,
+  Key,
+  Location,
+  More, MoreFilled,
+  SuccessFilled
+} from "@element-plus/icons-vue";
+import {addRCAMI, finishRCAMI, listRCAMI} from "@/api/RCAMI/RCAMI.js";
+import {getIdentityByOrder} from "@/api/identity/identity.js";
 
 const loading = ref(true)
 const editDisabled = ref(true)
@@ -13,12 +22,11 @@ const delDisabled = ref(true)
 const form = ref({})
 const formRef = ref(null)
 const rules = {
-  managerName: [
-    { required: true, message: '姓名不能为空' }
+  selected: [
+    { required: true, message: '请选择订单' }
   ],
-  managerPhone: [
-    { required: true, message: '手机号不能为空' },
-    { regexp: /^(?:(?:\+|00)86)?1[3-9]\d{9}$/, message: '手机号格式不正确' }
+  RCAMIInformation: [
+    { required: true, message: '维修需求不能为空' }
   ]
 }
 const list = ref([])
@@ -70,26 +78,19 @@ const copyText = (str) => {
   }
 }
 
-
-const deleteRow = (row = selections.value) => {
-  if(!row && row.length > 0) {
-    ElMessage.warning('请先选择要删除的管理员!')
+const dialogOpen = async (row = {}, str = '') => {
+  let tmp = JSON.parse(JSON.stringify(row))
+  if(row?.order) {
+    const {data} = await getIdentityByOrder(row.order.orderId)
+    cardList.value = data
+    tmp = {
+      ...row.rcami,
+      ...row.order,
+      selected: true,
+      home: row.home
+    }
   }
-  const str = row.managerName ? `是否删除管理员${row.managerName}?` : `是否删除${row.length}条?`
-  ElMessageBox.confirm(str,'提示', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
-  }).then(async () => {
-    loading.value = true
-    await deleteManager(row.managerId || row.map(item => item.managerId).join(','))
-    loading.value = false
-    ElMessage.success('删除成功!')
-    getList()
-  })
-}
-const dialogOpen = (row = {}, str = '') => {
-  form.value = JSON.parse(JSON.stringify(row))
+  form.value = tmp
   open.value = true
   title.value = str
 }
@@ -102,18 +103,57 @@ const dialogClose = () => {
 
 const submit = async () => {
   await formRef.value.validate()
-  loading.value = true
-  await addManager(tmp)
-  ElMessage.success('添加成功!')
+  if(title.value.includes('新增')) {
+    await addRCAMI(form.value)
+    ElMessage.success('添加成功!')
+  }
   dialogClose()
   getList()
 }
+
+const finish = (row) => {
+  ElMessageBox.confirm(`是否结束维修?`,'提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(async () => {
+    loading.value = true
+    await finishRCAMI(row.rcami)
+    loading.value = false
+    ElMessage.success('结束成功!')
+    getList()
+  })
+}
+
+const cardList = ref([])
+const selectOrder = () =>{
+  loading.value = true
+  window.open('/order?select=1', '_blank')
+}
+const listenSelect = async e => {
+  if(e.data?.orderId) {
+    const {data} = await getIdentityByOrder(e.data.orderId)
+    cardList.value = data
+    form.value = {
+      ...e.data,
+      selected: true
+    }
+    loading.value = false
+  }
+}
+onMounted(() => {
+  window.addEventListener('message', listenSelect)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('message', listenSelect)
+})
 </script>
 
 <template>
   <div class="wrap" v-loading="loading">
     <div>
-      <el-button type="primary" icon="plus" @click="dialogOpen">报修</el-button>
+      <el-button type="primary" icon="plus" @click="dialogOpen({},'新增报修')">报修</el-button>
     </div>
     <div class="part part-table">
       <el-table :data="list" size="default" @selectionChange="selectionChange">
@@ -121,6 +161,14 @@ const submit = async () => {
         <el-table-column label="序号" width="80" type="index" :index="curIndex"></el-table-column>
         <el-table-column label="维修地址" prop="home.homeAddress"/>
         <el-table-column label="维修需求" prop="rcami.RCAMIInformation"/>
+        <el-table-column label="状态" prop="rcami.completion">
+          <template #default="{row}">
+            <el-tag :type="row.rcami.completion ? 'success' : 'danger'">
+              {{row.rcami.completion || '未完成'}}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="完成时间" prop="rcami.completionProcessTime" />
         <el-table-column label="发起人" prop="user.userName"/>
         <el-table-column label="联系电话" prop="user.userPhone">
           <template #default="{row}">
@@ -130,7 +178,8 @@ const submit = async () => {
         <el-table-column label="操作" fixed="right">
           <template #default="{row}">
             <el-button v-debounce :icon="CircleCheckFilled" circle title="结束维修"
-                       @click="finish(row)" />
+                       @click="finish(row)" :disabled="Boolean(row.rcami.completion)"/>
+            <el-button v-debounce :icon="MoreFilled" circle title="查看详情" @click="dialogOpen(row,'维修详情')"></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -147,22 +196,72 @@ const submit = async () => {
     </div>
     <el-dialog v-model="open" :title="title" @close="dialogClose">
       <div class="flex flex-col gap-4">
-        <el-form :model="form" :rules="rules" size="large" ref="formRef" label-width="6.25rem">
-          <el-form-item label="姓名" prop="managerName">
-            <el-input v-model="form.managerName" placeholder="请输入姓名"></el-input>
+        <el-form :model="form" :rules="rules" size="large" ref="formRef" label-width="6.525rem">
+          <el-form-item label="订单" prop="selected">
+            <el-button type="primary" @click="selectOrder">选择</el-button>
           </el-form-item>
-          <el-form-item label="密码" v-show="title === '添加管理员'">
-            <el-input model-value="quickhome123" disabled></el-input>
+          <el-form-item label="维修需求" prop="RCAMIInformation">
+            <el-input type="textarea" :rows="2" v-model="form.RCAMIInformation" placeholder="请输入维修需求"></el-input>
           </el-form-item>
-          <el-form-item label="性别" prop="managerGender">
-            <el-radio-group v-model="form.managerGender">
-              <el-radio label="男">男</el-radio>
-              <el-radio label="女">女</el-radio>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item label="手机号" prop="managerPhone">
-            <el-input v-model="form.managerPhone" placeholder="请输入手机号"></el-input>
-          </el-form-item>
+          <div class="shadow-inner p-4 rounded-md" v-if="form.selected">
+            <p class="font-semibold">订单信息:</p>
+            <div class="flex flex-col gap-4 p-4">
+              <p>住宿时间段:</p>
+              <el-steps align-center>
+                <el-step :title="form.checkInTime" :icon="InfoFilled" title="入住时间">
+                  <template #title>
+                    <span>{{form.checkInTime}}</span>
+                  </template>
+                  <template #description>
+                    <span>入住时间</span>
+                  </template>
+                </el-step>
+                <el-step :title="form.checkOutTime" :icon="SuccessFilled" title="结束时间">
+                  <template #title>
+                    <span>{{form.checkOutTime}}</span>
+                  </template>
+                  <template #description>
+                    <span>结束时间</span>
+                  </template>
+                </el-step>
+              </el-steps>
+              <p>房间信息:</p>
+              <div class="home-detail">
+                <div class="home-detail__image">
+                  <el-image shape="square" :src="form.home?.homeImages?.split(',')[0]" fit="cover">
+                    <template #error>
+                      <span class="w-full h-full flex items-center justify-center">暂无照片</span>
+                    </template>
+                  </el-image>
+                </div>
+                <div class="home-detail__info">
+                  <div class="home-detail__name">{{form.home?.homeName}}</div>
+                  <div class="home-detail__type">{{form.home?.homeType}}</div>
+                  <div class="home-detail__address"><el-icon><Location/></el-icon>{{form.home?.homeAddress}}</div>
+                  <div class="home-detail__day-rent">预计日租:￥{{form.home?.homeDayRent}}</div>
+                </div>
+              </div>
+              <p>入住人信息</p>
+              <div class="check-in-card__list">
+                <div class="check-in-card__item" v-for="item in cardList" :key="item.IDCardRecordID">
+                  <div class="check-in-card__item__name">
+                    <el-icon><UserFilled /></el-icon>
+                    <span>{{item.IDCardName}}</span>
+                  </div>
+                  <div class="check-in-card__item__phone">
+                    <el-icon><Iphone /></el-icon>
+                    <span class="copy__able" @click="copyText(item.IDCardPhoneNumber)">{{item.IDCardPhoneNumber}}</span>
+                  </div>
+                  <div class="check-in-card__item__id-card">
+                    <el-icon><CreditCard /></el-icon>
+                    <span>{{item.IDCardNumber}}</span>
+                  </div>
+                </div>
+              </div>
+              <p class="self-end">支付金额: <span class="detail__payment">￥{{form.orderPayment.toFixed(2)}}</span></p>
+            </div>
+
+          </div>
         </el-form>
       </div>
       <template #footer>
@@ -187,5 +286,41 @@ const submit = async () => {
   &:hover {
     @apply text-primary underline;
   }
+}
+.home-detail {
+  @apply grid grid-cols-2 gap-4 max-w-96;
+  .home-detail__image {
+    @apply object-cover;
+  }
+  .home-detail__info {
+    @apply flex flex-col justify-around;
+    .home-detail__name {
+      @apply font-semibold text-2xl text-title;
+    }
+    .home-detail__address {
+      @apply text-text text-opacity-70;
+    }
+    .home-detail__price {
+      @apply self-end justify-self-end;
+    }
+  }
+}
+.check-in-card__list {
+  @apply flex gap-4;
+  .check-in-card__item {
+    @apply flex-1 flex flex-col gap-2 p-2 shadow-md rounded-md;
+    .check-in-card__item__name,.check-in-card__item__phone,.check-in-card__item__id-card {
+      @apply flex items-center gap-4;
+    }
+    .check-in-card__item__name {
+      @apply text-title font-semibold;
+    }
+    .check-in-card__item__id-card {
+      @apply text-title font-semibold;
+    }
+  }
+}
+.detail__payment {
+  @apply text-red-600 text-2xl font-bold;
 }
 </style>

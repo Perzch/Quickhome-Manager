@@ -4,6 +4,9 @@ import {useRouter} from "vue-router";
 import {addNotification, deleteNotification, listNotification, updateNotification} from "@/api/manager/notification.js";
 import {DeleteFilled, Edit, InfoFilled, UserFilled} from "@element-plus/icons-vue";
 import RichInput from "@/components/RichInput.vue";
+import {getManager} from "@/api/manager/manager.js";
+import {getUserInfo} from "@/api/user/info.js";
+import {useClipboard} from "@vueuse/core";
 
 const loading = ref(true)
 const editDisabled = ref(true)
@@ -94,12 +97,30 @@ const dialogClose = () => {
 
 const submit = async () => {
   await formRef.value.validate()
+  if(localStorage.getItem('role') === '0') {
+    form.value.notifyPostManager = localStorage.getItem('userId')
+  }
   const fn = form.value.userNotificationId ? updateNotification : addNotification;
   fn(form.value).then(() => {
     ElMessage.success(form.value.userNotificationId ? '修改成功!' : '添加成功!')
     dialogClose()
     getList()
   })
+}
+const {copy, isSupported} = useClipboard()
+const copyText = (str) => {
+  if(isSupported) {
+    copy && copy(str)
+    ElMessage.success('复制成功!')
+  } else {
+    ELMessage.error('浏览器不支持复制功能!')
+  }
+}
+
+const managerInfo = ref({})
+const popoverBefore =async (row) => {
+    const {data} = await getManager(row.notifyPostManager)
+    managerInfo.value = data
 }
 </script>
 
@@ -123,7 +144,33 @@ const submit = async () => {
 <!--        <el-table-column prop="notifyPostManager" label="发布人" width="60" />-->
         <el-table-column label="操作" fixed="right">
           <template #default="{row}">
-                <el-button v-debounce :icon="UserFilled" circle title="查看发布人"/>
+            <el-popover
+                placement="bottom-end"
+                trigger="click"
+                width="fit-content"
+                @before-enter="popoverBefore(row)"
+                v-if="row.notifyPostManager"
+            >
+              <template #default>
+                  <el-descriptions
+                      title="管理员信息"
+                      :column="1"
+                      border
+                  >
+                    <el-descriptions-item label="账号:">{{managerInfo.managerAccount}}</el-descriptions-item>
+                    <el-descriptions-item label="名称:">{{managerInfo.managerName}}</el-descriptions-item>
+                    <el-descriptions-item label="电话:">
+                      <span @click="copyText(managerInfo.managerPhone)" title="点击复制" class="copy__able">{{managerInfo.managerPhone}}</span>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="状态:">
+                      <el-tag size="large" :type="managerInfo.onlineStatus === '离线' ? 'danger' : 'success'">{{managerInfo.onlineStatus}}</el-tag>
+                    </el-descriptions-item>
+                  </el-descriptions>
+                </template>
+                <template #reference>
+                  <el-button circle icon="User" title="查看操作人"></el-button>
+                </template>
+            </el-popover>
                 <el-button v-debounce :icon="InfoFilled" circle title="查看详情" @click="toDetail(row)"/>
                 <el-button v-debounce :icon="Edit" circle title="修改" @click="dialogOpen(row, '修改通知')"/>
                 <el-button v-debounce :icon="DeleteFilled" circle title="删除" @click="deleteRow(row)"/>
@@ -145,7 +192,7 @@ const submit = async () => {
       <div class="flex flex-col gap-4">
         <el-form :model="form" :rules="rules" ref="formRef" label-width="6.25rem">
           <el-form-item label="发布时间">
-            <el-date-picker v-model="form.notificationReleaseTime" type="datetime" placeholder="请选择发布时间"></el-date-picker>
+            <el-date-picker v-model="form.notificationReleaseTime" type="datetime" placeholder="请选择发布时间" value-format="YYYY-MM-DD HH:mm:ss"></el-date-picker>
           </el-form-item>
           <el-form-item label="通知内容" prop="notificationContent">
             <RichInput v-model="form.notificationContent" placeholder="请输入通知内容"/>

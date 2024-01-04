@@ -4,23 +4,26 @@ import {useRoute, useRouter} from "vue-router";
 import {encrypt} from "@/utils/encryption.js";
 import {addManager, deleteManager, listManager} from "@/api/manager/manager.js";
 import {useClipboard} from "@vueuse/core";
-import {DeleteFilled, Edit, Key} from "@element-plus/icons-vue";
-import {listOrder} from "@/api/order/order.js";
+import {
+  Check,
+  CircleCheckFilled,
+  DeleteFilled,
+  Edit,
+  House, InfoFilled,
+  Key,
+  Location,
+  More,
+  MoreFilled, Pointer, SuccessFilled
+} from "@element-plus/icons-vue";
+import {deleteOrder, endOrder, listOrder} from "@/api/order/order.js";
+import {getHome} from "@/api/home/home.js";
+import {getIdentityByOrder} from "@/api/identity/identity.js";
 
 const loading = ref(true)
 const editDisabled = ref(true)
 const delDisabled = ref(true)
 const form = ref({})
-const formRef = ref(null)
-const rules = {
-  managerName: [
-    { required: true, message: '姓名不能为空' }
-  ],
-  managerPhone: [
-    { required: true, message: '手机号不能为空' },
-    { regexp: /^(?:(?:\+|00)86)?1[3-9]\d{9}$/, message: '手机号格式不正确' }
-  ]
-}
+const cardList = ref([])
 const list = ref([])
 const total = ref(0)
 const route = useRoute()
@@ -61,9 +64,9 @@ const selectionChange = (list) => {
   selections.value = list
 }
 
-const copyPhone = (row) => {
+const copyText = (str) => {
   if(isSupported) {
-    copy && copy(row.managerPhone)
+    copy && copy(str)
     ElMessage.success('复制成功!')
   } else {
     ELMessage.error('浏览器不支持复制功能!')
@@ -73,55 +76,75 @@ const copyPhone = (row) => {
 
 const deleteRow = (row = selections.value) => {
   if(!row && row.length > 0) {
-    ElMessage.warning('请先选择要删除的管理员!')
+    ElMessage.warning('请先选择需要删除的订单!')
   }
-  const str = row.managerName ? `是否删除管理员${row.managerName}?` : `是否删除${row.length}条?`
+  const str = row.orderId ? `是否删除该订单?` : `是否删除${row.length}条?`
   ElMessageBox.confirm(str,'提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
   }).then(async () => {
     loading.value = true
-    await deleteManager(row.managerId || row.map(item => item.managerId).join(','))
+    await deleteOrder(row.orderId || row.map(item => item.orderId).join(','))
     loading.value = false
     ElMessage.success('删除成功!')
     getList()
   })
 }
-const dialogOpen = (row = {}, str = '') => {
+const dialogOpen = async (row, str = '') => {
   form.value = JSON.parse(JSON.stringify(row))
+  const {data} = await getIdentityByOrder(form.value.orderId)
+  cardList.value = data
+  console.log(form.value,cardList.value)
   open.value = true
   title.value = str
 }
 
 const dialogClose = () => {
   open.value = false
-  formRef.value.resetFields()
+  cardList.value = []
   title.value = ''
 }
 
 const submit = async () => {
-  await formRef.value.validate()
-  const fn = form.value.managerId ? updateManager : addManager
-  const tmp = {
-    ...form.value,
-    managerPwd: encrypt('quickhome123')
-  }
-  loading.value = true
-  await fn(tmp)
-  ElMessage.success(form.value.managerId ? '修改成功!' : '添加成功!')
   dialogClose()
-  getList()
 }
 
+const endRow = (row) => {
+  ElMessageBox.confirm('是否结束该订单?','提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(async () => {
+    loading.value = true
+    await endOrder(row)
+    loading.value = false
+    ElMessage.success('结束成功!')
+    getList()
+  })
+}
+
+const home = ref({})
+const popoverLoading = ref(false)
+const showHomeDetail = async (row) => {
+  popoverLoading.value = true
+  const {data} = await getHome(row.homeId)
+  home.value = data
+  popoverLoading.value = false
+}
+
+const isSelect = ref(Boolean(route.query.select))
+const selectOrder = (row) => {
+  // console.log(window.opener)
+  window.opener.postMessage(JSON.parse(JSON.stringify(row)), '*')
+  window.close()
+}
 </script>
 
 <template>
   <div class="wrap" v-loading="loading">
     <div class="part-button-group">
-      <el-button v-debounce icon="plus" type="success" @click="dialogOpen({}, '新增管理员')">新增管理员</el-button>
-      <el-button v-debounce icon="edit" type="primary" :disabled="editDisabled" @click="dialogOpen(selections[0], '修改管理员')">修改管理员</el-button>
-      <el-button v-debounce icon="delete" type="danger" :disabled="delDisabled" @click="deleteRow()">删除管理员</el-button>
+      <el-button v-debounce icon="delete" type="danger" :disabled="delDisabled" @click="deleteRow()">删除</el-button>
     </div>
     <div class="part part-table">
       <el-table :data="list" size="default" @selectionChange="selectionChange">
@@ -129,25 +152,54 @@ const submit = async () => {
         <el-table-column label="序号" width="80" type="index" :index="curIndex"></el-table-column>
         <el-table-column label="房屋信息" width="auto">
           <template #default="{row}">
-            <div class="home-info">
-              <span class="home-name">{{row.home.homeName}}</span>
-              <span class="home-type">{{row.home.homeType}}</span>
+            <div class="flex items-center gap-1">
+              <div class="home-info">
+                <span class="home-name">{{row.home.homeName}}</span>
+                <span class="home-type">{{row.home.homeType}}</span>
+              </div>
+              <el-popover trigger="click" width="fit-content" @before-enter="showHomeDetail(row)">
+                <template #reference>
+                  <el-icon><WarningFilled /></el-icon>
+                </template>
+                <template #default>
+                  <div class="home-detail">
+                    <div class="home-detail__image">
+                      <el-image shape="square" :src="home.home?.homeImageList[0]" fit="cover">
+                        <template #error>
+                          <span class="w-full h-full flex items-center justify-center">暂无照片</span>
+                        </template>
+                      </el-image>
+                    </div>
+                    <div class="home-detail__info">
+                      <div class="home-detail__name">{{home.home?.homeName}}</div>
+                      <div class="home-detail__type">{{home.home?.homeType}}</div>
+                      <div class="home-detail__address"><el-icon><Location/></el-icon>{{home.home?.homeAddress}}</div>
+                    </div>
+                  </div>
+                </template>
+              </el-popover>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="房屋地址" prop="home.homeAddress"/>
-        <el-table-column label="入住时间" prop="checkInTime"/>
-        <el-table-column label="退房时间" prop="checkOutTime"/>
+        <el-table-column label="入住时间" prop="checkInTime" show-overflow-tooltip/>
+        <el-table-column label="退房时间" prop="checkOutTime" show-overflow-tooltip/>
         <el-table-column label="付款金额" prop="orderPayment">
           <template #default="{row}">
             <span>￥{{row.orderPayment.toFixed(2)}}</span>
           </template>
         </el-table-column>
         <el-table-column label="订单状态" prop="orderState" />
-        <el-table-column label="操作">
+        <el-table-column label="操作" fixed="right">
           <template #default="{row}">
-            <el-button v-debounce :icon="Edit" circle title="修改" @click="dialogOpen(row, '修改管理员')"/>
-            <el-button v-debounce :icon="DeleteFilled" circle title="删除" @click="deleteRow(row)"/>
+            <template v-if="isSelect">
+              <el-button v-debounce :icon="Pointer" circle title="选择" @click="selectOrder(row)"></el-button>
+              <el-button v-debounce :icon="MoreFilled" circle title="详情" @click="dialogOpen(row, '订单详情')"/>
+            </template>
+            <template v-else>
+              <el-button v-debounce :icon="CircleCheckFilled" circle title="结束订单" @click="endRow(row)"/>
+              <el-button v-debounce :icon="MoreFilled" circle title="详情" @click="dialogOpen(row, '订单详情')"/>
+              <el-button v-debounce :icon="DeleteFilled" circle title="删除" @click="deleteRow(row)" :disabled="['已结束','已取消'].includes(row.orderState)"/>
+            </template>
           </template>
         </el-table-column>
       </el-table>
@@ -164,23 +216,59 @@ const submit = async () => {
     </div>
     <el-dialog v-model="open" :title="title" @close="dialogClose">
       <div class="flex flex-col gap-4">
-        <el-form :model="form" :rules="rules" size="large" ref="formRef" label-width="6.25rem">
-          <el-form-item label="姓名" prop="managerName">
-            <el-input v-model="form.managerName" placeholder="请输入姓名"></el-input>
-          </el-form-item>
-          <el-form-item label="密码" v-show="title === '添加管理员'">
-            <el-input model-value="quickhome123" disabled></el-input>
-          </el-form-item>
-          <el-form-item label="性别" prop="managerGender">
-            <el-radio-group v-model="form.managerGender">
-              <el-radio label="男">男</el-radio>
-              <el-radio label="女">女</el-radio>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item label="手机号" prop="managerPhone">
-            <el-input v-model="form.managerPhone" placeholder="请输入手机号"></el-input>
-          </el-form-item>
-        </el-form>
+        <p>住宿时间段:</p>
+        <el-steps align-center>
+          <el-step :title="form.checkInTime" :icon="InfoFilled" title="入住时间">
+            <template #title>
+              <span>{{form.checkInTime}}</span>
+            </template>
+            <template #description>
+              <span>入住时间</span>
+            </template>
+          </el-step>
+          <el-step :title="form.checkOutTime" :icon="SuccessFilled" title="结束时间">
+            <template #title>
+              <span>{{form.checkOutTime}}</span>
+            </template>
+            <template #description>
+              <span>结束时间</span>
+            </template>
+          </el-step>
+        </el-steps>
+        <p>房间信息:</p>
+        <div class="home-detail">
+          <div class="home-detail__image">
+            <el-image shape="square" :src="form.home?.homeImages?.split(',')[0]" fit="cover">
+              <template #error>
+                <span class="w-full h-full flex items-center justify-center">暂无照片</span>
+              </template>
+            </el-image>
+          </div>
+          <div class="home-detail__info">
+            <div class="home-detail__name">{{form.home?.homeName}}</div>
+            <div class="home-detail__type">{{form.home?.homeType}}</div>
+            <div class="home-detail__address"><el-icon><Location/></el-icon>{{form.home?.homeAddress}}</div>
+            <div class="home-detail__day-rent">预计日租:￥{{form.home?.homeDayRent}}</div>
+          </div>
+        </div>
+        <p>入住人信息</p>
+        <div class="check-in-card__list">
+          <div class="check-in-card__item" v-for="item in cardList" :key="item.IDCardRecordID">
+            <div class="check-in-card__item__name">
+              <el-icon><UserFilled /></el-icon>
+              <span>{{item.IDCardName}}</span>
+            </div>
+            <div class="check-in-card__item__phone">
+              <el-icon><Iphone /></el-icon>
+              <span class="copy__able" @click="copyText(item.IDCardPhoneNumber)">{{item.IDCardPhoneNumber}}</span>
+            </div>
+            <div class="check-in-card__item__id-card">
+              <el-icon><CreditCard /></el-icon>
+              <span>{{item.IDCardNumber}}</span>
+            </div>
+          </div>
+        </div>
+        <p class="self-end">支付金额: <span class="detail__payment">￥{{form.orderPayment.toFixed(2)}}</span></p>
       </div>
       <template #footer>
         <div class="flex justify-end">
@@ -204,5 +292,41 @@ const submit = async () => {
   &:hover {
     @apply text-primary underline;
   }
+}
+.home-detail {
+  @apply grid grid-cols-2 gap-4 max-w-96;
+  .home-detail__image {
+    @apply object-cover;
+  }
+  .home-detail__info {
+    @apply flex flex-col justify-around;
+    .home-detail__name {
+      @apply font-semibold text-2xl text-title;
+    }
+    .home-detail__address {
+      @apply text-text text-opacity-70;
+    }
+    .home-detail__price {
+      @apply self-end justify-self-end;
+    }
+  }
+}
+.check-in-card__list {
+  @apply flex gap-4;
+  .check-in-card__item {
+    @apply flex-1 flex flex-col gap-2 p-2 shadow-md rounded-md;
+    .check-in-card__item__name,.check-in-card__item__phone,.check-in-card__item__id-card {
+      @apply flex items-center gap-4;
+    }
+    .check-in-card__item__name {
+      @apply text-title font-semibold;
+    }
+    .check-in-card__item__id-card {
+      @apply text-title font-semibold;
+    }
+  }
+}
+.detail__payment {
+  @apply text-red-600 text-2xl font-bold;
 }
 </style>

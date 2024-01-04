@@ -33,7 +33,7 @@ export function endOrder(data) {
     localStorage.setItem('execute', '结束订单')
     return service({
         method: 'post',
-        url: `${url}/end`,
+        url: `${url}/endOrder`,
         data
     })
 }

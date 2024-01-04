@@ -21,12 +21,17 @@ onMounted(() => {
 onBeforeUnmount(() => {
   observer.disconnect()
 })
+
+const emits = defineEmits(['expandSide'])
 </script>
 
 <template>
   <div class="header-nav-tracker" ref="tracker"></div>
   <div class="header-nav" ref="headerNav">
-    <Breadcrumb/>
+    <div class="flex gap-2 items-center">
+      <el-icon @click="emits('expandSide')" class="expand-button"><Menu /></el-icon>
+      <Breadcrumb/>
+    </div>
     <div class="user-box">
       <el-dropdown>
         <span class="el-dropdown-link">
@@ -63,5 +68,11 @@ onBeforeUnmount(() => {
 }
 :deep(.el-dropdown-menu__item) {
   @apply text-sm;
+}
+.expand-button {
+  @apply text-2xl p-2 box-content md:hidden cursor-pointer;
+  &:hover,&:focus {
+    @apply text-primary;
+  }
 }
 </style>
