@@ -130,7 +130,7 @@ const fileListChange = (res) => {
 <!--            <div class="notification-content" v-html="row.attraction.attractionInformation" />-->
 <!--          </template>-->
 <!--        </el-table-column>-->
-        <el-table-column label="开放时间" >
+        <el-table-column label="开放时间" show-overflow-tooltip>
           <template #default="{row}">
             <div>
               <span class="open-time">{{row?.openingTime}}</span>

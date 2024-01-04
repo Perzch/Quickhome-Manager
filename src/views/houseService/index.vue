@@ -159,8 +159,8 @@ onUnmounted(() => {
       <el-table :data="list" size="default" @selectionChange="selectionChange">
         <el-table-column type="selection"></el-table-column>
         <el-table-column label="序号" width="80" type="index" :index="curIndex"></el-table-column>
-        <el-table-column label="维修地址" prop="home.homeAddress"/>
-        <el-table-column label="维修需求" prop="rcami.RCAMIInformation"/>
+        <el-table-column label="维修地址" prop="home.homeAddress" show-overflow-tooltip/>
+        <el-table-column label="维修需求" prop="rcami.RCAMIInformation" show-overflow-tooltip/>
         <el-table-column label="状态" prop="rcami.completion">
           <template #default="{row}">
             <el-tag :type="row.rcami.completion ? 'success' : 'danger'">
@@ -168,9 +168,9 @@ onUnmounted(() => {
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="完成时间" prop="rcami.completionProcessTime" />
+        <el-table-column label="完成时间" prop="rcami.completionProcessTime" show-overflow-tooltip/>
         <el-table-column label="发起人" prop="user.userName"/>
-        <el-table-column label="联系电话" prop="user.userPhone">
+        <el-table-column label="联系电话" prop="user.userPhone" show-overflow-tooltip>
           <template #default="{row}">
             <span class="copy__able" @click="copyText(row.user.userPhone)" v-if="row.user?.userPhone">{{row.user.userPhone}}</span>
           </template>
@@ -196,7 +196,7 @@ onUnmounted(() => {
     </div>
     <el-dialog v-model="open" :title="title" @close="dialogClose">
       <div class="flex flex-col gap-4">
-        <el-form :model="form" :rules="rules" size="large" ref="formRef" label-width="6.525rem">
+        <el-form :model="form" :rules="rules" size="large" ref="formRef" label-width="7.525rem">
           <el-form-item label="订单" prop="selected">
             <el-button type="primary" @click="selectOrder">选择</el-button>
           </el-form-item>

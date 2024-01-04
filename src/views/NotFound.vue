@@ -5,7 +5,7 @@ const router = useRouter()
 const to = () => {
   const obj = {
     0: '/order',
-    1: '/statistical',
+    1: '/manager',
   }
   if(localStorage.getItem('role')) {
     router.push({

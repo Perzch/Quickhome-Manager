@@ -125,7 +125,7 @@ const popoverBefore =async (row) => {
 </script>
 
 <template>
-  <div class="wrap" v-loading="loading">
+  <div class="wrap" v-loading="loading" :style="`--fs:${1.4+'rem'}`">
     <div class="part-button-group">
       <el-button v-debounce icon="plus" type="success" @click="dialogOpen({}, '添加通知')">添加</el-button>
       <el-button v-debounce icon="edit" type="primary" :disabled="editDisabled" @click="dialogOpen(selections[0], '修改通知')">修改</el-button>
@@ -135,12 +135,12 @@ const popoverBefore =async (row) => {
       <el-table :data="list" @selectionChange="selectionChange" >
         <el-table-column type="selection"></el-table-column>
         <el-table-column label="序号" width="80" type="index" :index="curIndex"></el-table-column>
-        <el-table-column prop="notificationContent" label="通知内容">
+        <el-table-column prop="notificationContent" label="通知内容" show-overflow-tooltip>
           <template #default="{row}">
             <div v-html="row.notificationContent" />
           </template>
         </el-table-column>
-        <el-table-column prop="notificationReleaseTime" label="发布时间" />
+        <el-table-column prop="notificationReleaseTime" label="发布时间" show-overflow-tooltip/>
 <!--        <el-table-column prop="notifyPostManager" label="发布人" width="60" />-->
         <el-table-column label="操作" fixed="right">
           <template #default="{row}">

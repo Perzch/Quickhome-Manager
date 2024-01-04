@@ -126,13 +126,13 @@ const release = () => {
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="user.userName" label="用户名" />
-        <el-table-column prop="user.userPhone" label="手机号" >
+        <el-table-column prop="user.userName" label="用户名" show-overflow-tooltip/>
+        <el-table-column prop="user.userPhone" label="手机号" show-overflow-tooltip>
           <template #default="{row}">
             <span class="manager-phone" @click="copyPhone(row)" title="点击复制">{{row.user.userPhone}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="userInformation.userBirthday" label="生日" />
+        <el-table-column prop="userInformation.userBirthday" label="生日" show-overflow-tooltip/>
         <el-table-column prop="userInformation.userGender" label="性别" width="60"/>
         <el-table-column label="操作" fixed="right" v-if="!couponId">
           <template #default="{row}">

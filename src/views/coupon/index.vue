@@ -196,14 +196,14 @@ onUnmounted(() => {
       <el-table :data="list" @selectionChange="selectionChange" table-layout="auto">
         <el-table-column type="selection"></el-table-column>
         <el-table-column label="序号" width="80" type="index" :index="curIndex"></el-table-column>
-        <el-table-column prop="couponName" label="名称"  />
+        <el-table-column prop="couponName" label="名称" show-overflow-tooltip/>
         <el-table-column prop="discountInformation" label="详细信息" show-overflow-tooltip>
           <template #default="{row}">
             <div v-html="row.discountInformation"></div>
           </template>
         </el-table-column>
-        <el-table-column prop="discountMethod" label="打折方式" />
-        <el-table-column prop="discountIntensity" label="打折力度">
+        <el-table-column prop="discountMethod" label="打折方式" show-overflow-tooltip/>
+        <el-table-column prop="discountIntensity" label="打折力度" show-overflow-tooltip>
           <template #default="{row}">
             <template v-if="row.discountMethod === '满减'">
               ￥{{row.discountIntensity}}
@@ -213,7 +213,7 @@ onUnmounted(() => {
             </template>
           </template>
         </el-table-column>
-        <el-table-column prop="useThreshold" label="需满足" >
+        <el-table-column prop="useThreshold" label="需满足" show-overflow-tooltip>
           <template #default="{row}">
             ￥{{row.useThreshold}}
           </template>

@@ -77,8 +77,8 @@ const popoverBefore =async (row) => {
     <div class="part part-table">
       <el-table :data="list" size="default">
         <el-table-column label="序号" width="80" type="index" :index="curIndex"></el-table-column>
-        <el-table-column prop="executionContent" label="操作描述" />
-        <el-table-column prop="executionTime" label="执行时间" />
+        <el-table-column prop="executionContent" label="操作描述" show-overflow-tooltip/>
+        <el-table-column prop="executionTime" label="执行时间" show-overflow-tooltip/>
         <el-table-column prop="device" label="设备" width="60">
           <template #default="{row}">
             <el-icon :title="row.device === 'phone' ? '手机' : '电脑'">

@@ -3,7 +3,7 @@ import service from '@/utils/service'
 const url = `/home`
 export function listHome(params) {
     return service({
-        url: `${url}/list`,
+        url: `${url}/list/back`,
         method: 'get',
         params
     })
@@ -50,7 +50,7 @@ export function updateHome(data) {
     })
 }
 
-export function delHome(id) {
+export function deleteHome(id) {
     localStorage.setItem('execute', '删除房屋')
     return service({
         method: 'delete',

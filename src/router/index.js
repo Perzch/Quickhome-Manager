@@ -9,16 +9,16 @@ const getAsyncRouter = (role = localStorage.getItem('role')) => {
         // redirect: redirect[localStorage.getItem('role')] || '/login/admin',
         component: () => import('@/components/layout/index.vue'),
         children: [
-            {
-                path: '/statistical',
-                name: 'Statistical',
-                component: () => import('@/views/statistical/index.vue'),
-                meta: {
-                    role: '1',
-                    title: '流水统计',
-                    icon: 'Histogram'
-                }
-            },
+            // {
+            //     path: '/statistical',
+            //     name: 'Statistical',
+            //     component: () => import('@/views/statistical/index.vue'),
+            //     meta: {
+            //         role: '1',
+            //         title: '流水统计',
+            //         icon: 'Histogram'
+            //     }
+            // },
             {
                 path: '/house',
                 name: 'House',
@@ -36,7 +36,7 @@ const getAsyncRouter = (role = localStorage.getItem('role')) => {
                 meta: {
                     role: '1',
                     title: '管理员',
-                    icon: 'UserFilled'
+                    icon: 'Avatar'
                 }
             },
             {
@@ -183,7 +183,7 @@ router.beforeEach((to, from, next) => {
     if(to.path === '/') {
         const obj = {
             0: '/order',
-            1: '/statistical'
+            1: '/manager'
         }
         const role = localStorage.getItem('role')
         if(role) {

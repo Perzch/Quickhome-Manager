@@ -16,7 +16,7 @@ import {
   MoreFilled, Pointer, SuccessFilled
 } from "@element-plus/icons-vue";
 import {deleteOrder, endOrder, listOrder} from "@/api/order/order.js";
-import {getHome} from "@/api/home/home.js";
+import {getHome, updateHome} from "@/api/home/home.js";
 import {getIdentityByOrder} from "@/api/identity/identity.js";
 
 const loading = ref(true)
@@ -117,6 +117,10 @@ const endRow = (row) => {
     type: 'warning'
   }).then(async () => {
     loading.value = true
+    await updateHome({
+      ...row.home,
+      homeState: '可入住'
+    })
     await endOrder(row)
     loading.value = false
     ElMessage.success('结束成功!')
@@ -150,7 +154,7 @@ const selectOrder = (row) => {
       <el-table :data="list" size="default" @selectionChange="selectionChange">
         <el-table-column type="selection"></el-table-column>
         <el-table-column label="序号" width="80" type="index" :index="curIndex"></el-table-column>
-        <el-table-column label="房屋信息" width="auto">
+        <el-table-column label="房屋信息" width="auto" show-overflow-tooltip>
           <template #default="{row}">
             <div class="flex items-center gap-1">
               <div class="home-info">
@@ -183,7 +187,7 @@ const selectOrder = (row) => {
         </el-table-column>
         <el-table-column label="入住时间" prop="checkInTime" show-overflow-tooltip/>
         <el-table-column label="退房时间" prop="checkOutTime" show-overflow-tooltip/>
-        <el-table-column label="付款金额" prop="orderPayment">
+        <el-table-column label="付款金额" prop="orderPayment" show-overflow-tooltip>
           <template #default="{row}">
             <span>￥{{row.orderPayment.toFixed(2)}}</span>
           </template>

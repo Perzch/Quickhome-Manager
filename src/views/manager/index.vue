@@ -141,7 +141,7 @@ const resetPassword = async (row) => {
       <el-table :data="list" size="default" @selectionChange="selectionChange">
         <el-table-column type="selection"></el-table-column>
         <el-table-column label="序号" width="80" type="index" :index="curIndex"></el-table-column>
-        <el-table-column label="账号" width="auto">
+        <el-table-column label="账号" width="auto" show-overflow-tooltip>
           <template #default="{row}">
             <div class="account-email-box">
               <span class="user-account">{{row.managerName}}</span>
@@ -149,7 +149,7 @@ const resetPassword = async (row) => {
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="手机号">
+        <el-table-column label="手机号" show-overflow-tooltip>
           <template #default="{row}">
             <span class="manager-phone" @click="copyPhone(row)" title="点击复制">{{row.managerPhone}}</span>
           </template>
