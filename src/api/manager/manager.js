@@ -18,6 +18,7 @@ export function getManager(id) {
 }
 
 export function addManager(data) {
+    localStorage.setItem('execute', '新增管理员')
     return service({
         method: 'post',
         url,
@@ -26,6 +27,7 @@ export function addManager(data) {
 }
 
 export function updateManager(data) {
+    localStorage.setItem('execute', '修改管理员信息')
     return service({
         method: 'put',
         url,
@@ -50,6 +52,7 @@ export function offline(managerId) {
 }
 
 export function deleteManager(managerId) {
+    localStorage.setItem('execute', '删除管理员')
     return service({
         method: 'delete',
         url: `${url}/${managerId}`

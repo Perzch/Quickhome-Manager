@@ -21,7 +21,7 @@ export function finishRCAMI(data) {
 export function listRCAMI(params) {
     return service({
         method: 'get',
-        url,
+        url: `${url}/list`,
         params
     })
 }

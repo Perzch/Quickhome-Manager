@@ -3,6 +3,7 @@ import {getUserInfo as getUInfo} from "@/api/user/info";
 import { defineStore } from 'pinia'
 import {ref, watch} from "vue";
 import {useRouter} from "vue-router";
+import {offline} from "@/api/manager/manager.js";
 
 export const useGlobalStore =defineStore('global', () => {
     const userId = useStorage('userId', '')
@@ -27,6 +28,9 @@ export const useGlobalStore =defineStore('global', () => {
     //     getUserInfo()
     // })
     const logout = () => {
+        if(localStorage.getItem('role') === '0') {
+            offline(localStorage.getItem('userId'))
+        }
         localStorage.setItem('userId', '')
         localStorage.setItem('token', '')
         localStorage.setItem('role', '')

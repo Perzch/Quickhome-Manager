@@ -4,7 +4,8 @@ import {useRoute, useRouter} from "vue-router";
 import {encrypt} from "@/utils/encryption.js";
 import {addManager, deleteManager, listManager, updateManager} from "@/api/manager/manager.js";
 import {useClipboard} from "@vueuse/core";
-import {DeleteFilled, Edit, Key} from "@element-plus/icons-vue";
+import {CircleCheckFilled, DeleteFilled, Edit, Key} from "@element-plus/icons-vue";
+import {listRCAMI} from "@/api/RCAMI/RCAMI.js";
 
 const loading = ref(true)
 const editDisabled = ref(true)
@@ -39,7 +40,7 @@ const {copy, isSupported} = useClipboard()
 
 const getList = async () => {
   loading.value = true
-  const  { data } =  await listManager(queryParams.value)
+  const  { data } =  await listRCAMI(queryParams.value)
   list.value = data.records
   total.value = data.total
   loading.value = false
@@ -60,9 +61,9 @@ const selectionChange = (list) => {
   selections.value = list
 }
 
-const copyPhone = (row) => {
+const copyText = (str) => {
   if(isSupported) {
-    copy && copy(row.managerPhone)
+    copy && copy(str)
     ElMessage.success('复制成功!')
   } else {
     ELMessage.error('浏览器不支持复制功能!')
@@ -101,70 +102,35 @@ const dialogClose = () => {
 
 const submit = async () => {
   await formRef.value.validate()
-  const fn = form.value.managerId ? updateManager : addManager
-  const tmp = {
-    ...form.value,
-    managerPwd: form.value.managerId ? null : encrypt('quickhome888')
-  }
   loading.value = true
-  await fn(tmp)
-  ElMessage.success(form.value.managerId ? '修改成功!' : '添加成功!')
+  await addManager(tmp)
+  ElMessage.success('添加成功!')
   dialogClose()
   getList()
-}
-
-
-const resetPassword = async (row) => {
-  await ElMessageBox.confirm(`是否将${row.managerName}的密码重置为quickhome888?`,'提示', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
-  })
-  loading.value = true
-  await updateManager({
-    ...row,
-    managerPwd: encrypt('quickhome888')
-  })
-  loading.value = false
-  ElMessage.success('重置成功!')
 }
 </script>
 
 <template>
   <div class="wrap" v-loading="loading">
-    <div class="part-button-group">
-      <el-button v-debounce icon="plus" type="success" @click="dialogOpen({}, '新增管理员')">新增</el-button>
-      <el-button v-debounce icon="edit" type="primary" :disabled="editDisabled" @click="dialogOpen(selections[0], '修改管理员')">修改</el-button>
-      <el-button v-debounce icon="delete" type="danger" :disabled="delDisabled" @click="deleteRow()">删除</el-button>
+    <div>
+      <el-button type="primary" icon="plus" @click="dialogOpen">报修</el-button>
     </div>
     <div class="part part-table">
       <el-table :data="list" size="default" @selectionChange="selectionChange">
         <el-table-column type="selection"></el-table-column>
         <el-table-column label="序号" width="80" type="index" :index="curIndex"></el-table-column>
-        <el-table-column label="账号" width="auto">
+        <el-table-column label="维修地址" prop="home.homeAddress"/>
+        <el-table-column label="维修需求" prop="rcami.RCAMIInformation"/>
+        <el-table-column label="发起人" prop="user.userName"/>
+        <el-table-column label="联系电话" prop="user.userPhone">
           <template #default="{row}">
-            <div class="account-email-box">
-              <span class="user-account">{{row.managerName}}</span>
-              <span class="user-email">{{row.managerAccount}}</span>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column label="手机号">
-          <template #default="{row}">
-            <span class="manager-phone" @click="copyPhone(row)" title="点击复制">{{row.managerPhone}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column prop="managerGender" label="性别" width="60"/>
-        <el-table-column label="状态">
-          <template #default="{row}">
-            <el-tag size="large" :type="row.onlineStatus === '离线' ? 'danger' : 'success'">{{row.onlineStatus}}</el-tag>
+            <span class="copy__able" @click="copyText(row.user.userPhone)" v-if="row.user?.userPhone">{{row.user.userPhone}}</span>
           </template>
         </el-table-column>
         <el-table-column label="操作" fixed="right">
           <template #default="{row}">
-            <el-button v-debounce :icon="Key" circle title="重置密码"  @click="resetPassword(row)" />
-            <el-button v-debounce :icon="Edit" circle title="修改" @click="dialogOpen(row, '修改管理员')"/>
-            <el-button v-debounce :icon="DeleteFilled" circle title="删除" @click="deleteRow(row)"/>
+            <el-button v-debounce :icon="CircleCheckFilled" circle title="结束维修"
+                       @click="finish(row)" />
           </template>
         </el-table-column>
       </el-table>

@@ -25,6 +25,7 @@ export function getAttraction(id) {
 }
 
 export function addAttraction(data) {
+    localStorage.setItem('execute', '新增景点')
     return service({
         method: 'post',
         url,
@@ -33,6 +34,7 @@ export function addAttraction(data) {
 }
 
 export function updateAttraction(data) {
+    localStorage.setItem('execute', '修改景点')
     return service({
         method: 'put',
         url,
@@ -41,6 +43,7 @@ export function updateAttraction(data) {
 }
 
 export function deleteAttraction(id) {
+    localStorage.setItem('execute', '删除景点')
     return service({
         method: 'delete',
         url: url + '/' + id

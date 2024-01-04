@@ -17,6 +17,7 @@ export function listHomeOrderByCollection() {
 }
 
 export function checkHome(params) {
+
     return service({
         url: `${url}/check`,
         method: 'get',
@@ -32,6 +33,7 @@ export function getHome(id){
 }
 
 export function addHome(data) {
+    localStorage.setItem('execute', '新增房屋')
     return service({
         url,
         method: 'post',
@@ -40,6 +42,7 @@ export function addHome(data) {
 }
 
 export function updateHome(data) {
+    localStorage.setItem('execute', '修改房屋信息')
     return service({
         url,
         method: 'put',
@@ -48,6 +51,7 @@ export function updateHome(data) {
 }
 
 export function delHome(id) {
+    localStorage.setItem('execute', '删除房屋')
     return service({
         method: 'delete',
         url: `${url}/${id}`

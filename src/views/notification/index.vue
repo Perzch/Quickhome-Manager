@@ -106,9 +106,9 @@ const submit = async () => {
 <template>
   <div class="wrap" v-loading="loading">
     <div class="part-button-group">
-      <el-button v-debounce icon="plus" type="success" @click="dialogOpen({}, '发布通知')">发布通知</el-button>
-      <el-button v-debounce icon="edit" type="primary" :disabled="editDisabled" @click="dialogOpen(selections[0], '修改通知')">修改通知</el-button>
-      <el-button v-debounce icon="delete" type="danger" :disabled="delDisabled" @click="deleteRow()">删除通知</el-button>
+      <el-button v-debounce icon="plus" type="success" @click="dialogOpen({}, '添加通知')">添加</el-button>
+      <el-button v-debounce icon="edit" type="primary" :disabled="editDisabled" @click="dialogOpen(selections[0], '修改通知')">修改</el-button>
+      <el-button v-debounce icon="delete" type="danger" :disabled="delDisabled" @click="deleteRow()">删除</el-button>
     </div>
     <div class="part part-table">
       <el-table :data="list" @selectionChange="selectionChange" >
@@ -121,7 +121,7 @@ const submit = async () => {
         </el-table-column>
         <el-table-column prop="notificationReleaseTime" label="发布时间" />
 <!--        <el-table-column prop="notifyPostManager" label="发布人" width="60" />-->
-        <el-table-column label="操作">
+        <el-table-column label="操作" fixed="right">
           <template #default="{row}">
                 <el-button v-debounce :icon="UserFilled" circle title="查看发布人"/>
                 <el-button v-debounce :icon="InfoFilled" circle title="查看详情" @click="toDetail(row)"/>

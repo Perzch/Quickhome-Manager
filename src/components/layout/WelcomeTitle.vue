@@ -17,7 +17,7 @@
       @apply text-5xl font-bold bg-gradient-to-tl from-primary to-success bg-clip-text text-transparent;
     }
     .title-placeholder {
-      @apply text-2xl text-text;
+      @apply text-2xl text-white mix-blend-difference;
     }
   }
   &.admin {

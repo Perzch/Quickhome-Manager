@@ -49,16 +49,16 @@ const getAsyncRouter = (role = localStorage.getItem('role')) => {
                     icon: 'UserFilled'
                 }
             },
-            {
-                path: '/servicePerson',
-                name: 'ServicePerson',
-                component: () => import('@/views/servicePerson/index.vue'),
-                meta: {
-                    role: '0',
-                    title: '服务人员',
-                    icon: 'Avatar'
-                }
-            },
+            // {
+            //     path: '/servicePerson',
+            //     name: 'ServicePerson',
+            //     component: () => import('@/views/servicePerson/index.vue'),
+            //     meta: {
+            //         role: '0',
+            //         title: '服务人员',
+            //         icon: 'Avatar'
+            //     }
+            // },
             {
                 path: '/order',
                 name: 'Order',
@@ -80,6 +80,16 @@ const getAsyncRouter = (role = localStorage.getItem('role')) => {
                 }
             },
             {
+                path: '/houseService',
+                name: 'HomeService',
+                component: () => import('@/views/houseService/index.vue'),
+                meta: {
+                    role: '0',
+                    title: '房屋维修',
+                    icon: 'BrushFilled'
+                }
+            },
+            {
                 path: '/coupon',
                 name: 'Coupon',
                 component: () => import('@/views/coupon/index.vue'),
@@ -89,16 +99,16 @@ const getAsyncRouter = (role = localStorage.getItem('role')) => {
                     icon: 'Ticket'
                 }
             },
-            {
-                path: '/coupon/category',
-                name: 'CouponCategory',
-                component: () => import('@/views/coupon/category.vue'),
-                meta: {
-                    role: '0',
-                    title: '优惠券分类',
-                    icon: 'Ticket'
-                }
-            },
+            // {
+            //     path: '/coupon/category',
+            //     name: 'CouponCategory',
+            //     component: () => import('@/views/coupon/category.vue'),
+            //     meta: {
+            //         role: '0',
+            //         title: '优惠券分类',
+            //         icon: 'Ticket'
+            //     }
+            // },
             {
                 path: '/notification',
                 name: 'Notification',
@@ -184,7 +194,9 @@ router.beforeEach((to, from, next) => {
     }
     const tmp = router.getRoutes().find(r => r.path === to.path)
     // 如果tmp不存在，说明该路由不存在，加上一个query参数redirect，用于在登录后跳转到该路由
-    if(!tmp && !to.query.redirect) return next({path: to.path,query: Object.assign({},to.query,{redirect: to.fullPath})})
+    if(!tmp && !to.query.redirect) {
+        return next({path: to.path,query: Object.assign({},to.query,{redirect: to.fullPath})})
+    }
     next()
 })
 

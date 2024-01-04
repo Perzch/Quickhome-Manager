@@ -4,7 +4,7 @@ import {useRouter} from "vue-router";
 import {addNotification, deleteNotification, listNotification, updateNotification} from "@/api/manager/notification.js";
 import {DeleteFilled, Edit, InfoFilled, Pointer, UserFilled} from "@element-plus/icons-vue";
 import RichInput from "@/components/RichInput.vue";
-import {addCoupon, listCoupon, releaseCoupon, updateCoupon} from "@/api/coupon/coupon.js";
+import {addCoupon, deleteCoupon, listCoupon, releaseCoupon, updateCoupon} from "@/api/coupon/coupon.js";
 
 const loading = ref(true)
 const editDisabled = ref(true)
@@ -106,7 +106,7 @@ const deleteRow = (row = selections.value) => {
     type: 'warning'
   }).then(async () => {
     loading.value = true
-    await deleteNotification(row.couponId || row.map(item => item.couponId).join(','))
+    await deleteCoupon(row.couponId || row.map(item => item.couponId).join(','))
     loading.value = false
     ElMessage.success('删除成功!')
     getList()
@@ -183,12 +183,12 @@ onUnmounted(() => {
 <template>
   <div class="wrap" v-loading="loading">
     <div class="part-button-group">
-      <el-button v-debounce icon="plus" type="success" @click="dialogOpen({}, '添加优惠券')">发布优惠券</el-button>
-      <el-button v-debounce icon="edit" type="primary" :disabled="editDisabled" @click="dialogOpen(selections[0], '修改优惠券')">修改优惠券</el-button>
-      <el-button v-debounce icon="delete" type="danger" :disabled="delDisabled" @click="deleteRow()">删除优惠券</el-button>
+      <el-button v-debounce icon="plus" type="success" @click="dialogOpen({}, '添加优惠券')">添加</el-button>
+      <el-button v-debounce icon="edit" type="primary" :disabled="editDisabled" @click="dialogOpen(selections[0], '修改优惠券')">修改</el-button>
+      <el-button v-debounce icon="delete" type="danger" :disabled="delDisabled" @click="deleteRow()">删除</el-button>
     </div>
     <div class="part part-table">
-      <el-table :data="list" size="large" @selectionChange="selectionChange" table-layout="auto">
+      <el-table :data="list" @selectionChange="selectionChange" table-layout="auto">
         <el-table-column type="selection"></el-table-column>
         <el-table-column label="序号" width="80" type="index" :index="curIndex"></el-table-column>
         <el-table-column prop="couponName" label="名称"  />
@@ -221,7 +221,7 @@ onUnmounted(() => {
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" fixed="right">
           <template #default="{row}">
             <div class="execute">
               <el-button v-debounce :icon="Pointer" circle title="选择用户发放" @click="release(row)"/>

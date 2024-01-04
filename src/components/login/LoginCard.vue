@@ -1,6 +1,6 @@
 <script setup>
 import {ref} from "vue";
-import {login, superLogin} from "@/api/manager/manager.js";
+import {login, online, superLogin} from "@/api/manager/manager.js";
 import {encrypt} from "@/utils/encryption.js";
 import {useRouter} from "vue-router";
 import {useGlobalStore} from "@/stores/index.js";
@@ -69,6 +69,10 @@ const submit = async () => {
   localStorage.setItem('role', obj[props.isSuper].role)
   localStorage.setItem('username', obj[props.isSuper].username)
   await asyncAddRouter()
+  // 如果不是超级管理员登录,则设置管理员上线
+  if(!props.isSuper) {
+    await online(obj[props.isSuper].userId)
+  }
   // await getUserInfo()
   ElMessage.success('登录成功!')
   setTimeout( async() => {

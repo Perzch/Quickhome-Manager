@@ -26,6 +26,7 @@ export function loginByPhone(data) {
 }
 
 export function setPassword(data) {
+    localStorage.setItem('execute', '重置用户密码')
     return service({
         method: 'post',
         url: url + '/setPassword',
@@ -52,6 +53,7 @@ export function checkByMailOrPhone(data) {
 }
 
 export function updateUser(data) {
+    localStorage.setItem('execute', '修改用户信息')
     return service({
         method: 'put',
         url,
@@ -68,6 +70,7 @@ export function listUser(params) {
 }
 
 export function deleteUser(id) {
+    localStorage.setItem('execute', '删除用户')
     return service({
         method: 'delete',
         url: url + '/' + id,

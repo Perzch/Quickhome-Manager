@@ -11,6 +11,7 @@ export function listNotification(params) {
 }
 
 export function addNotification(data) {
+    localStorage.setItem('execute', '新增通知')
     return service({
         method: 'post',
         url,
@@ -19,6 +20,7 @@ export function addNotification(data) {
 }
 
 export function updateNotification(data) {
+    localStorage.setItem('execute', '修改通知')
     return service({
         method: 'put',
         url,
@@ -27,6 +29,7 @@ export function updateNotification(data) {
 }
 
 export function deleteNotification(id) {
+    localStorage.setItem('execute', '删除通知')
     return service({
         method: 'delete',
         url: `${url}/${id}`

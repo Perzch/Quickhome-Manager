@@ -9,11 +9,13 @@ export function addUserInfo(data) {
         data
     })
 }
-export function getUserInfo(params) {
+export function getUserInfo(userId) {
     return service({
         method: 'get',
         url,
-        params
+        params: {
+            userId
+        }
     })
 }
 

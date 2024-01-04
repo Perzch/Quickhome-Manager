@@ -66,3 +66,9 @@ a {
 .wrap {
   @apply flex flex-col gap-4;
 }
+.copy__able {
+  @apply cursor-pointer;
+    &:hover {
+        @apply underline;
+    }
+}

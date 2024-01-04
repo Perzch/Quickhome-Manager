@@ -11,6 +11,7 @@ export function listCoupon(params) {
 }
 
 export function addCoupon(data){
+    localStorage.setItem('execute', '新增优惠券')
     return service({
         method: 'post',
         url,
@@ -19,6 +20,7 @@ export function addCoupon(data){
 }
 
 export function updateCoupon(data){
+    localStorage.setItem('execute', '修改优惠券')
     return service({
         method: 'put',
         url,
@@ -34,6 +36,7 @@ export function getCoupon(id) {
 }
 
 export function releaseCoupon(data){
+    localStorage.setItem('execute', '发放优惠券')
     return service({
         method: 'post',
         url: url + '/release',
@@ -50,6 +53,7 @@ export function useCoupon(UACID) {
 }
 
 export function deleteCoupon(id) {
+    localStorage.setItem('execute', '删除优惠券')
     return service({
         method: 'delete',
         url: `${url}/${id}`

@@ -30,3 +30,18 @@
 .is-text:hover {
     @apply shadow-inner;
 }
+.el-dialog {
+    @apply transition-all duration-300;
+    @media (width < 768px) {
+        --el-dialog-width: 100%;
+    }
+    @media (width >= 768px) {
+        --el-dialog-width: 80%;
+    }
+    @media (width >= 1024px) {
+        --el-dialog-width: 70%;
+    }
+    @media (width >= 1280px) {
+        --el-dialog-width: 60%;
+    }
+}

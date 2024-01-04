@@ -106,7 +106,7 @@ const release = () => {
 <template>
   <div class="wrap" v-loading="loading">
     <div class="coupon-release" v-if="couponId">
-      <el-button v-debounce size="large" type="primary" @click="release">发放优惠券</el-button>
+      <el-button v-debounce size="large" type="primary" @click="release">发放</el-button>
       <el-button v-debounce size="large" @click="cancelRelease">取消</el-button>
     </div>
     <div class="part part-table">
@@ -116,7 +116,9 @@ const release = () => {
         <el-table-column label="账号" width="250">
           <template #default="{row}">
             <div class="user-multiple">
-              <el-avatar shape="square" :size="50" :src="row.userHeadImage?.imagePath" />
+              <el-avatar shape="square" :size="50" :src="row.userHeadImage?.imagePath">
+                <img :src="'/image/默认头像.png'" alt="error" />
+              </el-avatar>
               <div class="account-email-box">
                 <span class="user-account">{{row.user.userAccount}}</span>
                 <span class="user-email">{{row.user.userEmail}}</span>
@@ -132,7 +134,7 @@ const release = () => {
         </el-table-column>
         <el-table-column prop="userInformation.userBirthday" label="生日" />
         <el-table-column prop="userInformation.userGender" label="性别" width="60"/>
-        <el-table-column label="操作" v-if="!couponId">
+        <el-table-column label="操作" fixed="right" v-if="!couponId">
           <template #default="{row}">
             <el-button v-debounce :icon="Checked" circle title="查看日志" @click="toLog(row)" />
             <el-button v-debounce :icon="Key" circle title="重置密码"  @click="resetPassword(row)" />

@@ -20,9 +20,9 @@ import WelComeTitle from "@/components/layout/WelComeTitle.vue";
 
 <style lang="scss" scoped>
 .wrap {
-  @apply pl-40 max-h-screen h-screen w-screen relative overflow-hidden flex flex-col justify-center items-start;
+  @apply pl-40 max-h-[100dvh] h-[100dvh] w-[100dvw] relative overflow-hidden flex flex-col justify-center items-start;
   .bg {
-    @apply absolute top-0 right-0 w-2/3 h-2/3;
+    @apply absolute top-0 right-0 w-2/3 h-2/3 -z-2;
     background: url("../assets/img/curved9.jpg") right/cover no-repeat;
     transform: skewX(-30deg) translateX(30%);
     border-bottom-left-radius: 1rem;

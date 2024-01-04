@@ -3,6 +3,7 @@ import service from "@/utils/service";
 const url = `/order`
 
 export function addOrder(data) {
+    localStorage.setItem('execute', '新增订单')
     return service({
         method: 'post',
         url,
@@ -10,7 +11,8 @@ export function addOrder(data) {
     })
 }
 
-export function payOrder(data) {
+export function payOrder(data){
+    localStorage.setItem('execute', '支付订单')
     return service({
         method: 'post',
         url: `${url}/pay`,
@@ -19,6 +21,7 @@ export function payOrder(data) {
 }
 
 export function checkOut(orderId) {
+    localStorage.setItem('execute', '退房')
     return service({
         method: 'post',
         url: `${url}/checkOut`,
@@ -27,6 +30,7 @@ export function checkOut(orderId) {
 }
 
 export function endOrder(data) {
+    localStorage.setItem('execute', '结束订单')
     return service({
         method: 'post',
         url: `${url}/end`,
@@ -51,6 +55,7 @@ export function listOrderByHome(params) {
 }
 
 export function updateOrder(data) {
+    localStorage.setItem('execute', '修改订单信息')
     return service({
         method: 'put',
         url: `${url}/update`,
@@ -59,6 +64,7 @@ export function updateOrder(data) {
 }
 
 export function deleteOrder(id) {
+    localStorage.setItem('execute', '删除订单')
     return service({
         method: 'delete',
         url: `${url}/${id}`
@@ -66,6 +72,7 @@ export function deleteOrder(id) {
 }
 
 export function endOrderRefund(orderId) {
+    localStorage.setItem('execute', '结束订单退款')
     return service({
         method: 'post',
         url: `${url}/endOrderRefund`,
@@ -74,6 +81,7 @@ export function endOrderRefund(orderId) {
 }
 
 export function scheduleCancellation(orderId) {
+    localStorage.setItem('execute', '预定取消')
     return service({
         method: 'get',
         url: `${url}/scheduleCancellation`,

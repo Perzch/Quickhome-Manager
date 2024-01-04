@@ -116,9 +116,9 @@ const fileListChange = (res) => {
 <template>
   <div class="wrap" v-loading="loading">
     <div class="part-button-group">
-      <el-button v-debounce icon="plus" type="success" @click="dialogOpen({}, '添加景点')">添加景点</el-button>
-      <el-button v-debounce icon="edit" type="primary" :disabled="editDisabled" @click="dialogOpen(selections[0], '修改景点')">修改景点</el-button>
-      <el-button v-debounce icon="delete" type="danger" :disabled="delDisabled" @click="deleteRow()">删除景点</el-button>
+      <el-button v-debounce icon="plus" type="success" @click="dialogOpen({}, '添加景点')">添加</el-button>
+      <el-button v-debounce icon="edit" type="primary" :disabled="editDisabled" @click="dialogOpen(selections[0], '修改景点')">修改</el-button>
+      <el-button v-debounce icon="delete" type="danger" :disabled="delDisabled" @click="deleteRow()">删除</el-button>
     </div>
     <div class="part part-table">
       <el-table :data="list" size="default" @selectionChange="selectionChange">
@@ -140,7 +140,7 @@ const fileListChange = (res) => {
           </template>
         </el-table-column>
         <el-table-column prop="collectionCount" label="收藏人数" width="60" />
-        <el-table-column label="操作">
+        <el-table-column label="操作" fixed="right">
           <template #default="{row}">
             <el-button v-debounce :icon="Edit" circle title="修改" @click="dialogOpen(row, '修改景点')"/>
             <el-button v-debounce :icon="DeleteFilled" circle title="删除" @click="deleteRow(row)"/>

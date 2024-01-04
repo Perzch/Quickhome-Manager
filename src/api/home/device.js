@@ -11,6 +11,7 @@ export function listDevice(params) {
 }
 
 export function addDevice(data){
+    localStorage.setItem('execute', '新增设备')
     return service({
         url,
         method: 'post',
@@ -19,6 +20,7 @@ export function addDevice(data){
 }
 
 export function updateDevice(data) {
+    localStorage.setItem('execute', '修改设备信息')
     return service({
         url,
         method: 'put',
@@ -27,6 +29,7 @@ export function updateDevice(data) {
 }
 
 export function delDevice(id) {
+    localStorage.setItem('execute', '删除设备')
     return service({
         method: 'delete',
         url: `${url}/${id}`
