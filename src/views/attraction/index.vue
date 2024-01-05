@@ -12,12 +12,11 @@ const form = ref({})
 const timeRange = ref([])
 const fileList = ref([])
 const uploadOptions = computed(() => ({
-  // action: '/attraction/img',
   action: import.meta.env.VITE_BASE_URL + '/upload',
   accept: '.png, .jpeg, .jpg, .git, .webp',
   limit: 10,
   listType: 'picture-card',
-  multiple: true
+  multiple: true,
 }))
 const formRef = ref(null)
 const rules = {
