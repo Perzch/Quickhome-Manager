@@ -71,3 +71,21 @@ a {
         @apply underline;
     }
 }
+//富文本样式
+.fr-box {
+  .fr-toolbar {
+    @apply bg-white dark:bg-dark;
+    .fr-command.fr-btn {
+      @apply bg-transparent dark:bg-slate-50;
+    }
+  }
+  .fr-second-toolbar {
+    @apply bg-white dark:bg-transparent;
+  }
+  &.fr-box.fr-basic .fr-element {
+    @apply text-slate-900 dark:text-slate-50;
+  }
+  &.fr-box.fr-basic .fr-wrapper {
+    @apply bg-white dark:bg-dark;
+  }
+}
