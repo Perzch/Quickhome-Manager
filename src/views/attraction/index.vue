@@ -114,7 +114,7 @@ const fileListChange = (res) => {
 </script>
 
 <template>
-  <div class="wrap" v-loading="loading">
+  <div class="wrap" v-loading.fullscreen="loading">
     <div class="part-button-group">
       <el-button v-debounce icon="plus" type="success" @click="dialogOpen({}, '添加景点')">添加</el-button>
       <el-button v-debounce icon="edit" type="primary" :disabled="editDisabled" @click="dialogOpen(selections[0], '修改景点')">修改</el-button>

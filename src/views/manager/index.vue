@@ -123,7 +123,8 @@ const resetPassword = async (row) => {
   loading.value = true
   await updateManager({
     ...row,
-    managerPwd: encrypt('quickhome888')
+    managerPwd: encrypt('quickhome888'),
+    manager: true
   })
   loading.value = false
   ElMessage.success('重置成功!')

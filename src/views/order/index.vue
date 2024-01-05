@@ -200,7 +200,7 @@ const selectOrder = (row) => {
               <el-button v-debounce :icon="MoreFilled" circle title="详情" @click="dialogOpen(row, '订单详情')"/>
             </template>
             <template v-else>
-              <el-button v-debounce :icon="CircleCheckFilled" circle title="结束订单" @click="endRow(row)"/>
+              <el-button v-debounce :icon="CircleCheckFilled" circle title="结束订单" @click="endRow(row)" :disabled="row.orderState !== '已退房'"/>
               <el-button v-debounce :icon="MoreFilled" circle title="详情" @click="dialogOpen(row, '订单详情')"/>
               <el-button v-debounce :icon="DeleteFilled" circle title="删除" @click="deleteRow(row)" :disabled="['已结束','已取消'].includes(row.orderState)"/>
             </template>

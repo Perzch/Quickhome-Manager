@@ -12,7 +12,8 @@ export default {
         'danger': '#ee4266',
         'warning': '#ffd23f',
         'success': '#0ead69',
-        'info': '#f3fcf0'
+        'info': '#f3fcf0',
+        'dark': '#141414'
       },
       flex: {
         '1': '1 1 0%',

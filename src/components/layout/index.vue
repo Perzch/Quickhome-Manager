@@ -6,7 +6,6 @@ import {useGlobalStore} from "@/stores/index.js";
 import {offline, online} from "@/api/manager/manager.js";
 const expand = ref(false)
 
-const {logout} = useGlobalStore()
 const expandSide = () => {
   expand.value = !expand.value
 }
@@ -47,6 +46,7 @@ onUnmounted(() => {
 </template>
 <style lang='scss' scoped>
 .app-container {
+  @apply bg-gray-100 dark:bg-dark transition-all duration-300;
   @apply h-[100dvh] max-h-[100dvh] w-[100dvw] max-w-[100dvw] p-4 pr-0 pt-0 flex gap-4 items-center;
   .index-main {
     @apply relative pl-0 pt-2 pr-2 flex-1 h-full overflow-y-auto md:pl-52 transition-all duration-300;

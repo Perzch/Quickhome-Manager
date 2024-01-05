@@ -32,7 +32,7 @@ const asyncRouterChildren = getAsyncRouterChildren()
 .side-bar-items {
     @apply max-w-64 rounded-md transition-all duration-300 top-2 z-20 fixed opacity-0 -left-full md:opacity-100 md:left-0;
     .logo-box {
-        @apply p-2 rounded-md border-b flex items-center justify-center w-52 mb-4;
+        @apply p-2 rounded-md flex items-center justify-center w-52 mb-4;
         img {
             @apply w-full object-contain;
         }
