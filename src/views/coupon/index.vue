@@ -186,7 +186,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="wrap" v-loading="loading">
+  <div class="wrap" v-loading.fullscreen="loading">
     <div class="part-button-group">
       <el-button v-debounce icon="plus" type="success" @click="dialogOpen({}, '添加优惠券')">添加</el-button>
       <el-button v-debounce icon="edit" type="primary" :disabled="editDisabled" @click="dialogOpen(selections[0], '修改优惠券')">修改</el-button>
@@ -277,16 +277,18 @@ onUnmounted(() => {
           <el-form-item label="折扣力度" prop="discountIntensity">
             <template #label>{{form.discountMethod === '满减' ? '满减金额' : '折扣力度'}}</template>
             <template #default>
-              <template v-if="form.discountMethod === '满减'">
-                <el-input v-model.number="form.discountIntensity" placeholder="请输入满减金额">
-                  <template #append>元</template>
-                </el-input>
-              </template>
-              <template v-else>
-                <el-input-number :min="0.1" :max="9.9" v-model="form.discountIntensity" placeholder="请输入折扣力度">
-                  <template #append>折</template>
-                </el-input-number>
-              </template>
+              <transition name="right" mode="out-in">
+                <div v-if="form.discountMethod === '满减'">
+                  <el-input type="number" v-model.number="form.discountIntensity" placeholder="请输入满减金额">
+                    <template #append>元</template>
+                  </el-input>
+                </div>
+                <div v-else>
+                  <el-input-number :min="0.1" :max="9.9" v-model="form.discountIntensity" placeholder="请输入折扣力度">
+                    <template #append>折</template>
+                  </el-input-number>
+                </div>
+              </transition>
             </template>
           </el-form-item>
           <el-form-item label="需满足金额" prop="useThreshold">

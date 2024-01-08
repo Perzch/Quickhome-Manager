@@ -54,7 +54,7 @@ const submit = async () => {
       userId: data.superManagerId,
       role: '1',
       username: data.superManagerAccount,
-      path: '/statistical'
+      path: '/manager'
     },
     false:{
       token: data.token,
@@ -81,7 +81,7 @@ const submit = async () => {
     } else {
       await router.push(obj[props.isSuper].path)
     }
-  }, 350)
+  }, 1000)
 }
 </script>
 

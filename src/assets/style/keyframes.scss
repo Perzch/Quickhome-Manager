@@ -1,16 +1,13 @@
 @keyframes -right-leave-left-enter {
-
     0%,
     100% {
         transform: translateX(0);
         opacity: 1;
     }
-
     50% {
         transform: translateX(100%);
         opacity: 0;
     }
-
     51% {
         transform: translateX(-100%);
         opacity: 0;
@@ -18,20 +15,107 @@
 }
 
 @keyframes -left-leave-right-enter {
-
     0%,
     100% {
         transform: translateX(0);
         opacity: 1;
     }
-
     50% {
         transform: translateX(-100%);
         opacity: 0;
     }
-
     51% {
         transform: translateX(100%);
         opacity: 0;
+    }
+}
+
+@keyframes -bottom-leave-top-enter {
+    0%,
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    50% {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    51% {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+}
+
+@keyframes -top-leave-bottom-enter {
+    0%,
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    50% {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    51% {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+}
+
+@keyframes -right-leave {
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+    50% {
+        transform: translateX(-10%);
+        opacity: 1;
+    }
+    51% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+@keyframes -right-enter {
+    0% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    50% {
+        transform: translateX(10%);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+@keyframes -left-leave {
+    0%,
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    50% {
+        transform: translateX(10%);
+        opacity: 1;
+    }
+    51% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+}
+
+@keyframes -left-enter {
+    0% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    50% {
+        transform: translateX(-10%);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(0);
     }
 }

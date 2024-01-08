@@ -89,3 +89,15 @@ a {
     @apply bg-white dark:bg-dark;
   }
 }
+.right-enter-active {
+  animation: -right-enter .5s;
+}
+//.right-leave-active {
+//  animation: -right-leave .5s;
+//}
+.left-enter-active {
+  animation: -left-enter .5s;
+}
+//.left-leave-active {
+//  animation: -left-leave .5s;
+//}

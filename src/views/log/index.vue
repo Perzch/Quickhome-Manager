@@ -70,7 +70,7 @@ const popoverBefore =async (row) => {
 </script>
 
 <template>
-  <div class="wrap" v-loading="loading">
+  <div class="wrap" v-loading.fullscreen="loading">
     <div>
       <el-button type="primary" icon="refresh" @click="showAll">重置</el-button>
     </div>

@@ -132,7 +132,7 @@ const resetPassword = async (row) => {
 </script>
 
 <template>
-  <div class="wrap" v-loading="loading">
+  <div class="wrap" v-loading.fullscreen="loading">
     <div class="part-button-group">
       <el-button v-debounce icon="plus" type="success" @click="dialogOpen({}, '新增管理员')">新增</el-button>
       <el-button v-debounce icon="edit" type="primary" :disabled="editDisabled" @click="dialogOpen(selections[0], '修改管理员')">修改</el-button>
@@ -186,7 +186,7 @@ const resetPassword = async (row) => {
           <el-form-item label="姓名" prop="managerName">
             <el-input v-model="form.managerName" placeholder="请输入姓名"></el-input>
           </el-form-item>
-          <el-form-item label="密码" v-show="title === '添加管理员'">
+          <el-form-item label="密码" v-show="title === '新增管理员'">
             <el-input model-value="quickhome123" disabled></el-input>
           </el-form-item>
           <el-form-item label="性别" prop="managerGender">
@@ -196,7 +196,7 @@ const resetPassword = async (row) => {
             </el-radio-group>
           </el-form-item>
           <el-form-item label="手机号" prop="managerPhone">
-            <el-input v-model="form.managerPhone" placeholder="请输入手机号"></el-input>
+            <el-input type="tel" v-model="form.managerPhone" placeholder="请输入手机号"></el-input>
           </el-form-item>
         </el-form>
       </div>

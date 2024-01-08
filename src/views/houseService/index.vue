@@ -151,7 +151,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="wrap" v-loading="loading">
+  <div class="wrap" v-loading.fullscreen="loading">
     <div>
       <el-button type="primary" icon="plus" @click="dialogOpen({},'新增报修')">报修</el-button>
     </div>

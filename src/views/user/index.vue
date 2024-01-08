@@ -104,7 +104,7 @@ const release = () => {
 </script>
 
 <template>
-  <div class="wrap" v-loading="loading">
+  <div class="wrap" v-loading.fullscreen="loading">
     <div class="coupon-release" v-if="couponId">
       <el-button v-debounce size="large" type="primary" @click="release">发放</el-button>
       <el-button v-debounce size="large" @click="cancelRelease">取消</el-button>
