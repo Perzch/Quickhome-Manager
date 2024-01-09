@@ -118,8 +118,10 @@ const endRow = (row) => {
   }).then(async () => {
     loading.value = true
     await updateHome({
-      ...row.home,
-      homeState: '可入住'
+      home: {
+        ...row.home,
+        homeState: '可入住'
+      }
     })
     await endOrder(row)
     loading.value = false
