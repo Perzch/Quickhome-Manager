@@ -118,13 +118,15 @@ const endRow = (row) => {
   }).then(async () => {
     loading.value = true
     await updateHome({
-      ...row.home,
-      homeState: '可入住'
+      home: {
+        ...row.home,
+        homeState: '可入住'
+      }
     })
     await endOrder(row)
     loading.value = false
     ElMessage.success('结束成功!')
-    getList()
+    await getList()
   })
 }
 
@@ -139,7 +141,6 @@ const showHomeDetail = async (row) => {
 
 const isSelect = ref(Boolean(route.query.select))
 const selectOrder = (row) => {
-  // console.log(window.opener)
   window.opener.postMessage(JSON.parse(JSON.stringify(row)), '*')
   window.close()
 }
