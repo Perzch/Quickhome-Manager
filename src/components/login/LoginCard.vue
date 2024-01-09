@@ -14,6 +14,7 @@ const form = ref({
   username: '',
   password: ''
 })
+const loading =ref(false)
 const rules = {
   username: [
     { required: true, message: '请输入用户名/电话', trigger: 'blur' },
@@ -41,6 +42,7 @@ const to = () => {
  * @returns {Promise<void>}
  */
 const submit = async () => {
+  loading.value = true
   const flag = await formRef.value.validate()
   if(!flag) return
   const fn = props.isSuper ? superLogin : login
@@ -81,12 +83,13 @@ const submit = async () => {
     } else {
       await router.push(obj[props.isSuper].path)
     }
+    loading.value = false
   }, 1000)
 }
 </script>
 
 <template>
-  <div class="card" :class="isSuper ? 'bg-transparent' : 'bg-white'">
+  <div class="card" :class="isSuper ? 'bg-transparent' : 'bg-white'" v-loading.fullscreen="loading">
     <div class="card-header">
       <span>登录</span>
     </div>

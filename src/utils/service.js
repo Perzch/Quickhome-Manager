@@ -29,7 +29,7 @@ service.interceptors.response.use((response) => {
         navigator.geolocation.getCurrentPosition((position) => {
           addLog({
             userPerformingId: localStorage.getItem('userId'),
-            executionContent: `${localStorage.getItem('username')} ${execute}`,
+            executionContent: `${str}-${localStorage.getItem('username')}:${execute}`,
             device: window.innerWidth >= 768 ? 'pc' : 'phone',
             executionPlace: `${position.coords.longitude},${position.coords.latitude}`
           })

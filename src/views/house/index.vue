@@ -191,7 +191,6 @@ const handleRemoveDevice = (index) => {
     <div class="part-button-group">
       <el-button v-debounce icon="plus" type="success" @click="dialogOpen({}, '添加房屋')">添加</el-button>
       <el-button v-debounce icon="edit" type="primary" :disabled="editDisabled" @click="dialogOpen(selections[0], '修改房屋')">修改</el-button>
-      <el-button v-debounce icon="delete" type="danger" :disabled="delDisabled" @click="deleteRow()">删除</el-button>
     </div>
     <div class="part part-table">
       <el-table :data="list" size="default" @selectionChange="selectionChange">
@@ -220,7 +219,7 @@ const handleRemoveDevice = (index) => {
         <el-table-column label="操作" fixed="right">
           <template #default="{row}">
             <el-button v-debounce :icon="Edit" circle title="修改" @click="dialogOpen(row, '修改房屋')"/>
-            <el-button v-debounce :icon="DeleteFilled" circle title="删除" @click="deleteRow(row)"/>
+            <el-button v-debounce :icon="DeleteFilled" circle title="删除" @click="deleteRow(row)" :disabled="row.home.homeState !== '可入住'"/>
           </template>
         </el-table-column>
       </el-table>
@@ -257,7 +256,7 @@ const handleRemoveDevice = (index) => {
                       <span v-if="row.done">{{row.deviceType}}</span>
                       <el-select v-model="row.deviceType" placeholder="请选择设备类型" v-else>
                         <el-option
-                            v-for="item in ['电视','空调','冰箱','洗衣机','热水器','冷暖器']"
+                            v-for="item in ['电视','空调','冰箱','洗衣机','热水器','冷暖器','其他']"
                             :key="item"
                             :label="item"
                             :value="item"
@@ -328,7 +327,7 @@ const handleRemoveDevice = (index) => {
       <template #footer>
         <div class="flex justify-end">
           <el-button @click="dialogClose" size="large" v-debounce>取消</el-button>
-          <el-button type="primary" @click="submit" size="large" v-debounce>{{step === 3 ? '确定' : '下一步'}}</el-button>
+          <el-button type="primary" @click="submit" size="large" v-debounce :disabled="form.home?.homeState === '已入住'">{{step === 3 ? '确定' : '下一步'}}</el-button>
         </div>
       </template>
     </el-dialog>

@@ -10,6 +10,7 @@ const { logout } = useGlobalStore()
 const username = useStorage('username', '')
 const tracker = ref( null)
 const headerNav = ref(null)
+const role = useStorage('role', '')
 const headerNavObserver = useIntersectionObserver(tracker, (entries, observer) => {
   if (entries[0].intersectionRatio === 0) {
     headerNav.value.classList.add('not-top')
@@ -83,7 +84,7 @@ const submit =async () => {
         </span>
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item @click="dialogOpen">修改密码</el-dropdown-item>
+            <el-dropdown-item @click="dialogOpen" v-if="role === '0'">修改密码</el-dropdown-item>
             <el-dropdown-item @click="logout">退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </template>

@@ -121,7 +121,7 @@ const finish = (row) => {
     await finishRCAMI(row.rcami)
     loading.value = false
     ElMessage.success('结束成功!')
-    getList()
+    await getList()
   })
 }
 
@@ -157,7 +157,7 @@ onUnmounted(() => {
     </div>
     <div class="part part-table">
       <el-table :data="list" size="default" @selectionChange="selectionChange">
-        <el-table-column type="selection"></el-table-column>
+<!--        <el-table-column type="selection"></el-table-column>-->
         <el-table-column label="序号" width="80" type="index" :index="curIndex"></el-table-column>
         <el-table-column label="维修地址" prop="home.homeAddress" show-overflow-tooltip/>
         <el-table-column label="维修需求" prop="rcami.RCAMIInformation" show-overflow-tooltip/>
@@ -169,7 +169,11 @@ onUnmounted(() => {
           </template>
         </el-table-column>
         <el-table-column label="完成时间" prop="rcami.completionProcessTime" show-overflow-tooltip/>
-        <el-table-column label="发起人" prop="user.userName"/>
+        <el-table-column label="发起人" prop="user.userName">
+          <template #default="{row}">
+            {{row?.user?.userName || '管理员'}}
+          </template>
+        </el-table-column>
         <el-table-column label="联系电话" prop="user.userPhone" show-overflow-tooltip>
           <template #default="{row}">
             <span class="copy__able" @click="copyText(row.user.userPhone)" v-if="row.user?.userPhone">{{row.user.userPhone}}</span>
