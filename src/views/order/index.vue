@@ -147,12 +147,8 @@ const selectOrder = (row) => {
 
 <template>
   <div class="wrap" v-loading.fullscreen="loading">
-    <div class="part-button-group">
-      <el-button v-debounce icon="delete" type="danger" :disabled="delDisabled" @click="deleteRow()">删除</el-button>
-    </div>
     <div class="part part-table">
       <el-table :data="list" size="default" @selectionChange="selectionChange">
-        <el-table-column type="selection"></el-table-column>
         <el-table-column label="序号" width="80" type="index" :index="curIndex"></el-table-column>
         <el-table-column label="房屋信息" width="auto" show-overflow-tooltip>
           <template #default="{row}">
@@ -161,7 +157,7 @@ const selectOrder = (row) => {
                 <span class="home-name">{{row.home.homeName}}</span>
                 <span class="home-type">{{row.home.homeType}}</span>
               </div>
-              <el-popover trigger="click" width="fit-content" @before-enter="showHomeDetail(row)">
+              <el-popover trigger="hover" width="fit-content" @before-enter="showHomeDetail(row)">
                 <template #reference>
                   <el-icon><WarningFilled /></el-icon>
                 </template>
@@ -202,7 +198,7 @@ const selectOrder = (row) => {
             <template v-else>
               <el-button v-debounce :icon="CircleCheckFilled" circle title="结束订单" @click="endRow(row)" :disabled="row.orderState !== '已退房'"/>
               <el-button v-debounce :icon="MoreFilled" circle title="详情" @click="dialogOpen(row, '订单详情')"/>
-              <el-button v-debounce :icon="DeleteFilled" circle title="删除" @click="deleteRow(row)" :disabled="['已结束','已取消'].includes(row.orderState)"/>
+              <el-button v-debounce :icon="DeleteFilled" circle title="删除" @click="deleteRow(row)" :disabled="!['已结束','已取消','已退款'].includes(row.orderState)"/>
             </template>
           </template>
         </el-table-column>

@@ -136,7 +136,6 @@ const resetPassword = async (row) => {
     <div class="part-button-group">
       <el-button v-debounce icon="plus" type="success" @click="dialogOpen({}, '新增管理员')">新增</el-button>
       <el-button v-debounce icon="edit" type="primary" :disabled="editDisabled" @click="dialogOpen(selections[0], '修改管理员')">修改</el-button>
-      <el-button v-debounce icon="delete" type="danger" :disabled="delDisabled" @click="deleteRow()">删除</el-button>
     </div>
     <div class="part part-table">
       <el-table :data="list" size="default" @selectionChange="selectionChange">
@@ -165,7 +164,7 @@ const resetPassword = async (row) => {
           <template #default="{row}">
             <el-button v-debounce :icon="Key" circle title="重置密码"  @click="resetPassword(row)" />
             <el-button v-debounce :icon="Edit" circle title="修改" @click="dialogOpen(row, '修改管理员')"/>
-            <el-button v-debounce :icon="DeleteFilled" circle title="删除" @click="deleteRow(row)"/>
+            <el-button v-debounce :icon="DeleteFilled" circle title="删除" @click="deleteRow(row)" :disabled="row.onlineStatus === '在线'"/>
           </template>
         </el-table-column>
       </el-table>
