@@ -307,7 +307,9 @@ const handleRemoveDevice = (index) => {
                 <el-input v-model="form.home.homeName" placeholder="请输入房屋名称"></el-input>
               </el-form-item>
               <el-form-item label="房屋类型" prop="home.homeType">
-                <el-input v-model="form.home.homeType" placeholder="请输入房屋类型"></el-input>
+                <el-select v-model="form.home.homeType" clearable placeholder="房型">
+                  <el-option v-for="item in ['舒适房','电竞房','风景房','情侣房']" :key="item" :label="item" :value="item"></el-option>
+                </el-select>
               </el-form-item>
               <el-form-item label="房屋日租" prop="home.homeDayRent">
                 <el-input :min="1" v-model.number="form.home.homeDayRent" placeholder="请输入房屋日租金"></el-input>
