@@ -119,7 +119,7 @@ const dialogOpen = (row = {}, str = '') => {
   open.value = true
   title.value = str
   form.value = JSON.parse(JSON.stringify(row))
-  if(form.value.discountIntensity) {
+  if(form.value.discountIntensity && form.value.discountMethod === '折扣') {
     form.value.discountIntensity = form.value.discountIntensity * 10
   }
   if(form.value.earliestUseTime && form.value.latestUseTime) {
