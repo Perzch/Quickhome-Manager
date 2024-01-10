@@ -207,6 +207,9 @@ onUnmounted(() => {
           <el-form-item label="维修需求" prop="RCAMIInformation">
             <el-input type="textarea" :rows="2" v-model="form.RCAMIInformation" placeholder="请输入维修需求"></el-input>
           </el-form-item>
+          <el-form-item label="需求详情" prop="des">
+            <el-input type="textarea" :rows="2" v-model="form.des" placeholder="请输入需求详情"></el-input>
+          </el-form-item>
           <div class="shadow-inner p-4 rounded-md" v-if="form.selected">
             <p class="font-semibold">订单信息:</p>
             <div class="flex flex-col gap-4 p-4">

@@ -10,6 +10,9 @@ import * as path from "node:path";
 export default defineConfig(async ({ command, mode}) => {
   const env = loadEnv(mode, process.cwd())
   return {
+    build: {
+      outDir: 'manager'
+    },
     server: {
       port: 7735,
       proxy: {
