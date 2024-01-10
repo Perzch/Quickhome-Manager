@@ -127,7 +127,7 @@ const endRow =async (row) => {
         return '扣除的押金不能小于0'
       }
       if (value > 50000) {
-        return '扣除的押金不能大于订单金额'
+        return '扣除的押金不能大于5000'
       }
       return true
     }
