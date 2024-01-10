@@ -143,17 +143,22 @@ const dialogClose = () => {
 
 const submit = async () => {
   if(step.value === 3) {
-    await formRef.value.validate()
-    const fn = form.value.homeId ? updateHome : addHome;
-    form.value.home.homeImages = fileList.value.map(item => item.url).join(',')
-    const tmp = {
-      ...form.value,
-      homeDeviceList: form.value.homeDeviceList.filter(item => item.done)
-    }
-    fn(tmp).then(() => {
-      ElMessage.success(form.value.homeId ? '修改成功!' : '添加成功!')
-      dialogClose()
-      getList()
+    await formRef.value.validate().then(valid => {
+      if(valid) {
+        const fn = form.value.homeId ? updateHome : addHome;
+        form.value.home.homeImages = fileList.value.map(item => item.url).join(',')
+        const tmp = {
+          ...form.value,
+          homeDeviceList: form.value.homeDeviceList.filter(item => item.done)
+        }
+        fn(tmp).then(() => {
+          ElMessage.success(form.value.homeId ? '修改成功!' : '添加成功!')
+          dialogClose()
+          getList()
+        })
+      }
+    }).catch(() => {
+      return ElMessage.error('请填写完整信息')
     })
   } else {
     step.value ++
@@ -243,15 +248,15 @@ const handleRemoveDevice = (index) => {
         </el-steps>
         <el-form :model="form" :rules="rules" ref="formRef" label-width="6.25rem">
           <el-collapse-transition>
-              <div class="device-list" v-if="step === 3">
+              <div class="device-list" v-show="step === 3">
                 <el-table :data="form.homeDeviceList">
-                  <el-table-column label="名称">
+                  <el-table-column label="名称" prop="deviceName">
                     <template #default="{row}">
                       <span v-if="row.done">{{row.deviceName}}</span>
                       <el-input v-model="row.deviceName" placeholder="请输入设备名称" v-else></el-input>
                     </template>
                   </el-table-column>
-                  <el-table-column label="类型">
+                  <el-table-column label="类型" prop="deviceType">
                     <template #default="{row}">
                       <span v-if="row.done">{{row.deviceType}}</span>
                       <el-select v-model="row.deviceType" placeholder="请选择设备类型" v-else>
@@ -264,13 +269,13 @@ const handleRemoveDevice = (index) => {
                       </el-select>
                     </template>
                   </el-table-column>
-                  <el-table-column label="品牌">
+                  <el-table-column label="品牌" prop="brand">
                     <template #default="{row}">
                       <span v-if="row.done">{{row.brand}}</span>
                       <el-input v-model="row.brand" placeholder="请输入设备品牌" v-else></el-input>
                     </template>
                   </el-table-column>
-                  <el-table-column label="价格">
+                  <el-table-column label="价格" prop="price">
                     <template #default="{row}">
                       <span v-if="row.done">{{row.price}}</span>
                       <el-input-number :min="1" v-model="row.price" placeholder="请输入设备品牌" v-else></el-input-number>
@@ -286,7 +291,7 @@ const handleRemoveDevice = (index) => {
               </div>
           </el-collapse-transition>
           <el-collapse-transition>
-              <div v-if="step=== 2">
+              <div v-show="step=== 2">
                 <el-form-item label="占地面积" prop="homeInformation.homeArea">
                   <el-input type="number" :min="1" :max="999" v-model.number="form.homeInformation.homeArea" placeholder="请输入房屋占地面积"></el-input>
                 </el-form-item>
@@ -302,7 +307,7 @@ const handleRemoveDevice = (index) => {
               </div>
           </el-collapse-transition>
           <el-collapse-transition>
-            <div v-if="step === 1">
+            <div v-show="step === 1">
               <el-form-item label="房屋名称" prop="home.homeName">
                 <el-input v-model="form.home.homeName" placeholder="请输入房屋名称"></el-input>
               </el-form-item>
