@@ -110,24 +110,39 @@ const submit = async () => {
   dialogClose()
 }
 
-const endRow = (row) => {
-  ElMessageBox.confirm('是否结束该订单?','提示', {
+const endRow =async (row) => {
+  await ElMessageBox.confirm('是否结束该订单?','提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
-  }).then(async () => {
-    loading.value = true
-    await updateHome({
-      home: {
-        ...row.home,
-        homeState: '可入住'
-      }
-    })
-    await endOrder(row)
-    loading.value = false
-    ElMessage.success('结束成功!')
-    await getList()
   })
+  const {value} = await ElMessageBox.prompt('请输入扣除的押金', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    inputValidator: (value) => {
+      if (value === '') {
+        return true
+      }
+      if (value < 0) {
+        return '扣除的押金不能小于0'
+      }
+      if (value > row.orderPayment) {
+        return '扣除的押金不能大于订单金额'
+      }
+      return true
+    }
+  })
+  row.orderPayment -= value
+  await updateHome({
+    home: {
+      ...row.home,
+      homeState: '可入住'
+    }
+  })
+  await endOrder(row)
+  loading.value = false
+  ElMessage.success('结束成功!')
+  await getList()
 }
 
 const home = ref({})
