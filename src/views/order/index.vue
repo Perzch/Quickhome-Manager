@@ -286,7 +286,10 @@ const selectOrder = (row) => {
             </div>
           </div>
         </div>
-        <p class="self-end">支付金额: <span class="detail__payment">￥{{form.orderPayment.toFixed(2)}}</span></p>
+        <div class="self-end">
+          <p>抵扣押金: <span class="">￥{{form.orderDeposit.toFixed(2)}}</span></p>
+          <p>支付金额: <span class="detail__payment">￥{{form.orderPayment.toFixed(2)}}</span></p>
+        </div>
       </div>
       <template #footer>
         <div class="flex justify-end">
