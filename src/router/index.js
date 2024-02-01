@@ -9,16 +9,16 @@ const getAsyncRouter = (role = localStorage.getItem('role')) => {
         // redirect: redirect[localStorage.getItem('role')] || '/login/admin',
         component: () => import('@/components/layout/index.vue'),
         children: [
-            // {
-            //     path: '/statistical',
-            //     name: 'Statistical',
-            //     component: () => import('@/views/statistical/index.vue'),
-            //     meta: {
-            //         role: '1',
-            //         title: '流水统计',
-            //         icon: 'Histogram'
-            //     }
-            // },
+            {
+                path: '/statistical',
+                name: 'Statistical',
+                component: () => import('@/views/statistical/index.vue'),
+                meta: {
+                    role: '0',
+                    title: '流水统计',
+                    icon: 'Histogram'
+                }
+            },
             {
                 path: '/house',
                 name: 'House',
@@ -181,13 +181,9 @@ router.beforeEach((to, from, next) => {
     useTitle(title)
     // 如果是根路由，根据角色跳转到相应的页面
     if(to.path === '/') {
-        const obj = {
-            0: '/order',
-            1: '/manager'
-        }
         const role = localStorage.getItem('role')
         if(role) {
-            return next(obj[role])
+            return next('/statistical')
         } else {
             return next('/login/admin')
         }

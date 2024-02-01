@@ -117,7 +117,7 @@ const release = () => {
           <template #default="{row}">
             <div class="user-multiple">
               <el-avatar shape="square" :size="50" :src="row.userHeadImage?.imagePath">
-                <img :src="'/image/默认头像.png'" alt="error" />
+                <img :src="'/image/默认头像.png'" alt="" />
               </el-avatar>
               <div class="account-email-box">
                 <span class="user-account">{{row.user.userAccount}}</span>

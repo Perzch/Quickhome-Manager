@@ -56,14 +56,12 @@ const submit = async () => {
       userId: data.superManagerId,
       role: '1',
       username: data.superManagerAccount,
-      path: '/manager'
     },
     false:{
       token: data.token,
       userId: data.managerId,
       role: '0',
       username: data.managerName,
-      path: '/order'
     }
   }
   localStorage.setItem('token', obj[props.isSuper].token)
@@ -81,7 +79,7 @@ const submit = async () => {
     if(router.currentRoute.value.query.redirect) {
       await router.push(router.currentRoute.value.query.redirect)
     } else {
-      await router.push(obj[props.isSuper].path)
+      await router.push('/')
     }
     loading.value = false
   }, 1000)

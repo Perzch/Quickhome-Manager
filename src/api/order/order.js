@@ -54,6 +54,32 @@ export function listOrderByHome(params) {
     })
 }
 
+export function getDayCount() {
+    return service({
+        method: 'get',
+        url: `${url}/day/count`
+    })
+}
+export function getDayStatistics() {
+    return service({
+        method: 'get',
+        url: `${url}/day/statistics`
+    })
+}
+export function getTotalCount() {
+    return service({
+        method: 'get',
+        url: `${url}/total/count`
+    })
+}
+
+export function getTotalStatistics() {
+    return service({
+        method: 'get',
+        url: `${url}/total/statistics`
+    })
+}
+
 export function updateOrder(data) {
     localStorage.setItem('execute', '修改订单信息')
     return service({

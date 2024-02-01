@@ -24,6 +24,7 @@ const router = useRouter()
 const queryParams = ref({
   page: 1,
   size: 10,
+  after: true
 })
 const open = ref(false)
 const title = ref('')

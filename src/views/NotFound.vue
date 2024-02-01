@@ -3,13 +3,9 @@ import {useRouter} from "vue-router";
 
 const router = useRouter()
 const to = () => {
-  const obj = {
-    0: '/order',
-    1: '/manager',
-  }
   if(localStorage.getItem('role')) {
     router.push({
-      path: obj[localStorage.getItem('role')]
+      path: '/statistical'
     })
     return
   }
